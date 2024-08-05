@@ -1,5 +1,5 @@
 from insured_person import InsuredPerson
-
+from policy import Policy
 
 # třída pro správu kolekce pojištěných osob
 class InsuranceRegistry:
@@ -22,3 +22,11 @@ class InsuranceRegistry:
             p for p in self.__insured_people
             if p.first_name.lower() == first_name and p.last_name.lower() == last_name
         ]
+
+    def add_policy_to_person(self, first_name: str, last_name: str, policy: Policy) -> None:
+        people = self.get_insured_person(first_name, last_name)
+        if people:
+            people[0].add_policy(policy)
+            print(f"Pojištění bylo úspěšně přidáno pro {first_name} {last_name}")
+        else:
+            print(f"Pojištěný {first_name} {last_name} nebyl nalezen.")

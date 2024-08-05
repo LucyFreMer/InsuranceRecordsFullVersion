@@ -6,7 +6,12 @@ class InsuredPerson:
         self.last_name = last_name
         self.age = age
         self.phone_number = phone_number
+        self.policies = []
+
+    def add_policy(self, policy):
+        self.policies.append(policy)
 
     def __str__(self):
+        policies_str = "\n".join([str(policy) for policy in self.policies])
         # Vrácení textové reprezentace pojištěné osoby
-        return f"{self.first_name} {self.last_name}, věk: {self.age}, telefonní číslo: {self.phone_number}"
+        return f"{self.first_name} {self.last_name}, věk: {self.age}, telefonní číslo: {self.phone_number}\nPojištění:\n{policies_str}"

@@ -1,4 +1,5 @@
 import re
+from policy import Policy
 
 
 # třída pro zpracování vstupů od uživatele
@@ -47,3 +48,11 @@ class InsuranceForm:
                 break
             print('Telefonní číslo je ve špatném formátu.')
         return phone_number
+
+    def get_policy_details(self) -> Policy:
+        policy_type = input("Zadejte typ pojištění: ").strip()
+        coverage_amount = float(input("Zadejte výši krytí: ").strip())
+        premium = float(input("Zadejte pojistné: ").strip())
+        start_date = input("Zadejte datum začátku pojištění (YYYY-MM-DD): ").strip()
+        end_date = input("Zadejte datum konce pojištění (YYYY-MM-DD): ").strip()
+        return Policy(policy_type, coverage_amount, premium, start_date, end_date)

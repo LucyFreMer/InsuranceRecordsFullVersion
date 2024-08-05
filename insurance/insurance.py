@@ -1,6 +1,7 @@
 from insured_person import InsuredPerson
 from insurance_registry import InsuranceRegistry
 from insurance_form import InsuranceForm
+from policy import Policy
 
 
 # hlavní třída řídící běh aplikace a interakci mezi jednotlivými komponentami
@@ -21,12 +22,13 @@ Vyberte jednu z následujících možností:
 1. Přidat nového pojištěného
 2. Zobrazit seznam pojištěných
 3. Vyhledat pojistného pomocí jména a příjmení
-4. Konec
+4. Přidat pojištění pro pojištěného
+5. Konec
+        '''
 
-'''
         print(title)
         choice = input(choice_description)
-        while choice != "4":
+        while choice != "5":
             match choice:
                 case "1":
                     # Přidání nového pojištěného
@@ -59,6 +61,12 @@ Vyberte jednu z následujících možností:
                             print(person)
                     else:
                         print("Pojištěný nebyl nalezen.")
+
+                case "4":
+                    first_name = input("Zadejte křestní jméno: ").strip().lower()
+                    last_name = input("Zadejte příjmení: ").strip().lower()
+                    policy = self.__form.get_policy_details()
+                    self.__registry.add_policy_to_person(first_name, last_name, policy)
 
                 case _:
                     print('Neplatná volba, zkuste to znovu.')

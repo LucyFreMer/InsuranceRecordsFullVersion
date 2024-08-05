@@ -1,6 +1,5 @@
 import re
 
-
 # třída pro reprezentaci pojištěné osoby
 class InsuredPerson:
     def __init__(self, first_name: str, last_name: str, age: int, phone_number: str) -> None:
@@ -15,8 +14,21 @@ class InsuredPerson:
         self.policies.append(policy)
 
     def __str__(self):
+        policies_str = "\n".join([str(policy) for policy in self.policies])
         # Vrácení textové reprezentace pojištěné osoby
-        return f"{self.first_name} {self.last_name}, věk: {self.age}, telefonní číslo: {self.phone_number}"
+        return f"{self.first_name} {self.last_name}, věk: {self.age}, telefonní číslo: {self.phone_number}\nPojištění:\n{policies_str}"
+
+
+class Policy:
+    def __init__(self, policy_type: str, coverage_amount: float, premium: float, start_date: str, end_date: str) -> None:
+        self.policy_type = policy_type
+        self.coverage_amount = coverage_amount
+        self.premium = premium
+        self.start_date = start_date
+        self.end_date = end_date
+
+    def __str__(self):
+        return f"Typ pojištění: {self.policy_type}, Výše krytí: {self.coverage_amount}, Pojistné: {self.premium}, Platnost od: {self.start_date} do: {self.end_date}"
 
 
 # třída pro správu kolekce pojištěných osob
@@ -40,6 +52,14 @@ class InsuranceRegistry:
             p for p in self.__insured_people
             if p.first_name.lower() == first_name and p.last_name.lower() == last_name
         ]
+
+    def add_policy_to_person(self, first_name: str, last_name: str, policy: Policy) -> None:
+        people = self.get_insured_person(first_name, last_name)
+        if people:
+            people[0].add_policy(policy)
+            print(f"Pojištění bylo úspěšně přidáno pro {first_name} {last_name}")
+        else:
+            print(f"Pojištěný {first_name} {last_name} nebyl nalezen.")
 
 
 # třída pro zpracování vstupů od uživatele
@@ -89,6 +109,14 @@ class InsuranceForm:
             print('Telefonní číslo je ve špatném formátu.')
         return phone_number
 
+    def get_policy_details(self) -> Policy:
+        policy_type = input("Zadejte typ pojištění: ").strip()
+        coverage_amount = float(input("Zadejte výši krytí: ").strip())
+        premium = float(input("Zadejte pojistné: ").strip())
+        start_date = input("Zadejte datum začátku pojištění (YYYY-MM-DD): ").strip()
+        end_date = input("Zadejte datum konce pojištění (YYYY-MM-DD): ").strip()
+        return Policy(policy_type, coverage_amount, premium, start_date, end_date)
+
 
 # hlavní třída řídící běh aplikace a interakci mezi jednotlivými komponentami
 class Insurance:
@@ -108,12 +136,12 @@ Vyberte jednu z následujících možností:
 1. Přidat nového pojištěného
 2. Zobrazit seznam pojištěných
 3. Vyhledat pojistného pomocí jména a příjmení
-4. Konec
-
+4. Přidat pojištění pro pojištěného
+5. Konec
 '''
         print(title)
         choice = input(choice_description)
-        while choice != "4":
+        while choice != "5":
             match choice:
                 case "1":
                     # Přidání nového pojištěného
@@ -146,6 +174,12 @@ Vyberte jednu z následujících možností:
                             print(person)
                     else:
                         print("Pojištěný nebyl nalezen.")
+
+                case "4":
+                    first_name = input("Zadejte křestní jméno: ").strip().lower()
+                    last_name = input("Zadejte příjmení: ").strip().lower()
+                    policy = self.__form.get_policy_details()
+                    self.__registry.add_policy_to_person(first_name, last_name, policy)
 
                 case _:
                     print('Neplatná volba, zkuste to znovu.')
