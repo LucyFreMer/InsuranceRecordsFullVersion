@@ -4,8 +4,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),  # Domovská stránka
-    path('pojisteni/', views.insured_list, name='insured_list'),  # Seznam pojištěných
-    path('pojisteni/<int:id>/', views.insured_detail, name='insured_detail'),  # Detail pojištěného
-    path('pojisteni/pridat/', views.add_insured, name='add_insured'),  # Přidání nového pojištěného
-    path('pojisteni/pojistka/<int:id>/', views.policy_detail, name='policy_detail'),  # Detail pojištění
+    path('seznam/', views.insured_list, name='insured_list'),  # Seznam pojištěných
+    path('<int:id>/', views.insured_detail, name='insured_detail'),  # Detail pojištěného
+    path('pridat/', views.add_insured, name='add_insured'),  # Přidání nového pojištěného
+    path('pojistka/<int:id>/', views.policy_detail, name='policy_detail'),  # Detail pojištění
 ]

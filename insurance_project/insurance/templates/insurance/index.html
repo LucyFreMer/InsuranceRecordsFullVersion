@@ -3,10 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Domovská stránka</title>
+    <title>Pojistěnci</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Vítejte na domovské stránce pojišťovny</h1>
-    <a href="{% url 'insured_list' %}">Seznam pojištěných</a>
+    <header>
+        <nav>
+            <ul class="navbar">
+                <li><a href="#" class="logo">PojistěníApp</a></li>
+                <li><a href="#">Pojistěnci</a></li>
+                <li><a href="#">Pojištění</a></li>
+                <li><a href="#">Události</a></li>
+                <li><a href="#">O aplikaci...</a></li>
+                <li class="nav-right"><a href="#">Přihlásit</a></li>
+                <li class="nav-right"><a href="#">Registrovat</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Pojistěnci</h1>
+
+        <button class="btn btn-primary">Nový pojištěnec</button>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Jméno</th>
+                    <th>Bydliště</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><a href="#">Jan Novák</a></td>
+                    <td>Ve Svahu 3, Praha 1</td>
+                    <td>
+                        <button class="btn btn-danger">Odstranit</button>
+                        <button class="btn btn-warning">Editovat</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="#">Josef Nový</a></td>
+                    <td>Hlavní 145/1, Praha 3</td>
+                    <td>
+                        <button class="btn btn-danger">Odstranit</button>
+                        <button class="btn btn-warning">Editovat</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td><a href="#">Hanka Blatná</a></td>
+                    <td>Růžová 6, Pelhřimov</td>
+                    <td>
+                        <button class="btn btn-danger">Odstranit</button>
+                        <button class="btn btn-warning">Editovat</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="pagination">
+            <a href="#" class="disabled">Předchozí</a>
+            <a href="#">1</a>
+            <a href="#" class="active">2</a>
+            <a href="#">3</a>
+            <a href="#">Další</a>
+        </div>
+    </main>
 </body>
 </html>
