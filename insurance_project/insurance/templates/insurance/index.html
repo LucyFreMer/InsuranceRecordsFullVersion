@@ -12,12 +12,16 @@
         <nav>
             <ul class="navbar">
                 <li><a href="#" class="logo">PojistěníApp</a></li>
-                <li><a href="#">Pojistěnci</a></li>
+                <li><a href="{% url 'insured_list' %}">Pojistěnci</a></li>
                 <li><a href="#">Pojištění</a></li>
                 <li><a href="#">Události</a></li>
                 <li><a href="#">O aplikaci...</a></li>
-                <li class="nav-right"><a href="#">Přihlásit</a></li>
-                <li class="nav-right"><a href="#">Registrovat</a></li>
+                {% if user.is_authenticated %}
+                    <li class="nav-right"><a href="{% url 'logout' %}">Odhlásit</a></li>
+                {% else %}
+                    <li class="nav-right"><a href="{% url 'login' %}">Přihlásit</a></li>
+                    <li class="nav-right"><a href="{% url 'register' %}">Registrovat</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>

@@ -72,6 +72,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'insurance_project.wsgi.application'
 
 
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -120,7 +124,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'insurance_project/static'),
+    os.path.join(BASE_DIR, 'insurance/static'),
 ]
 
 # Default primary key field type

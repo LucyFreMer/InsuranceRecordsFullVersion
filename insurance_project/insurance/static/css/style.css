@@ -10,11 +10,14 @@ header {
 }
 
 .navbar {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    text-align: center;
+    background-color: #333;
+    padding: 10px 0;
+    position: fixed;
+    width: 200px;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
 }
 
 .navbar li {
