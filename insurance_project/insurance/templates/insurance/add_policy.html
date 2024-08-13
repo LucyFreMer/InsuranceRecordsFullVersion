@@ -1,0 +1,14 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}Přidat pojištění{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Přidat pojištění</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Uložit</button>
+    </form>
+</div>
+{% endblock %}

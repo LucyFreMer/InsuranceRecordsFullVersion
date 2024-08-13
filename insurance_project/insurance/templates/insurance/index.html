@@ -19,39 +19,44 @@
                 </tr>
             </thead>
             <tbody>
+                {% for person in insured_people %}
                 <tr>
-                    <td><a href="#">Jan Novák</a></td>
-                    <td>Ve Svahu 3, Praha 1</td>
+                    <td><a href="{% url 'insured_detail' person.id %}">{{ person.first_name }} {{ person.last_name }}</a></td>
+                    <td>{{ person.address }}</td>
                     <td>
-                        <button class="btn btn-danger">Odstranit</button>
-                        <button class="btn btn-warning">Editovat</button>
+                        <a href="{% url 'edit_insured' person.id %}" class="btn btn-warning">Editovat</a>
+                        <form action="{% url 'delete_insured' person.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Odstranit</button>
+                        </form>
                     </td>
                 </tr>
-                <tr>
-                    <td><a href="#">Josef Nový</a></td>
-                    <td>Hlavní 145/1, Praha 3</td>
-                    <td>
-                        <button class="btn btn-danger">Odstranit</button>
-                        <button class="btn btn-warning">Editovat</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><a href="#">Hanka Blatná</a></td>
-                    <td>Růžová 6, Pelhřimov</td>
-                    <td>
-                        <button class="btn btn-danger">Odstranit</button>
-                        <button class="btn btn-warning">Editovat</button>
-                    </td>
-                </tr>
+                {% endfor %}
             </tbody>
         </table>
 
         <div class="pagination">
-            <a href="#" class="btn btn-light disabled">Předchozí</a>
-            <a href="#" class="btn btn-primary">1</a>
-            <a href="#" class="btn btn-light">2</a>
-            <a href="#" class="btn btn-light">3</a>
-            <a href="#" class="btn btn-light">Další</a>
+            <span class="step-links">
+                {% if insured_people.has_previous %}
+                    <a href="?page={{ insured_people.previous_page_number }}" class="btn btn-light">Předchozí</a>
+                {% else %}
+                    <a href="#" class="btn btn-light disabled">Předchozí</a>
+                {% endif %}
+
+                {% for num in insured_people.paginator.page_range %}
+                    {% if insured_people.number == num %}
+                        <a href="?page={{ num }}" class="btn btn-primary">{{ num }}</a>
+                    {% else %}
+                        <a href="?page={{ num }}" class="btn btn-light">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+
+                {% if insured_people.has_next %}
+                    <a href="?page={{ insured_people.next_page_number }}" class="btn btn-light">Další</a>
+                {% else %}
+                    <a href="#" class="btn btn-light disabled">Další</a>
+                {% endif %}
+            </span>
         </div>
     </div>
 {% endblock %}

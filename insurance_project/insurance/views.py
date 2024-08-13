@@ -3,11 +3,17 @@ from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import InsuredPerson, Policy
 from .forms import InsuredPersonForm, PolicyForm
+from django.core.paginator import Paginator
 
 
 # Hlavní stránka (index) - zobrazuje seznam pojištěnců
 def index(request):
-    insured_people = InsuredPerson.objects.all()
+    insured_people_list = InsuredPerson.objects.all()
+    paginator = Paginator(insured_people_list, 10)  # počet pojištěnců na stránku
+
+    page_number = request.GET.get('page')
+    insured_people = paginator.get_page(page_number)
+
     return render(request, 'insurance/index.html', {'insured_people': insured_people})
 
 

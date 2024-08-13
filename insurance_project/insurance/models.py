@@ -5,7 +5,7 @@ class InsuredPerson(models.Model):
     first_name = models.CharField("Jméno", max_length=100)
     last_name = models.CharField("Příjmení", max_length=100)
     age = models.IntegerField("Věk")
-    phone_number = models.CharField("Telefonní číslo", max_length=15)
+    phone_number = models.CharField("Telefonní číslo", max_length=16)
     email = models.EmailField("Email", max_length=254, blank=True, null=True)
     address = models.CharField("Adresa", max_length=255, blank=True, null=True)
 

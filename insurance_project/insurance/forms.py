@@ -5,7 +5,7 @@ from .models import InsuredPerson, Policy
 class InsuredPersonForm(forms.ModelForm):
     class Meta:
         model = InsuredPerson
-        fields = ['first_name', 'last_name', 'age', 'phone_number']
+        fields = ['first_name', 'last_name', 'email', 'age', 'phone_number']
         labels = {
             'first_name': 'Křestní jméno',
             'last_name': 'Příjmení',
