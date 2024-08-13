@@ -1,42 +1,21 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pojistěnci</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-    <header>
-        <nav>
-            <ul class="navbar">
-                <li><a href="#" class="logo">PojistěníApp</a></li>
-                <li><a href="{% url 'insured_list' %}">Pojistěnci</a></li>
-                <li><a href="#">Pojištění</a></li>
-                <li><a href="#">Události</a></li>
-                <li><a href="#">O aplikaci...</a></li>
-                {% if user.is_authenticated %}
-                    <li class="nav-right"><a href="{% url 'logout' %}">Odhlásit</a></li>
-                {% else %}
-                    <li class="nav-right"><a href="{% url 'login' %}">Přihlásit</a></li>
-                    <li class="nav-right"><a href="{% url 'register' %}">Registrovat</a></li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
+{% extends 'insurance/base.html' %}
 
-    <main>
+{% block title %}Seznam pojištěnců{% endblock %}
+
+{% block content %}
+    <div class="container">
         <h1>Pojistěnci</h1>
 
-        <button class="btn btn-primary">Nový pojištěnec</button>
+        <div class="new-insured-button-container">
+            <a href="{% url 'add_insured' %}" class="btn btn-primary new-insured-button">Nový pojištěnec</a>
+        </div>
 
-        <table>
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Jméno</th>
                     <th>Bydliště</th>
-                    <th></th>
+                    <th>Akce</th>
                 </tr>
             </thead>
             <tbody>
@@ -68,12 +47,11 @@
         </table>
 
         <div class="pagination">
-            <a href="#" class="disabled">Předchozí</a>
-            <a href="#">1</a>
-            <a href="#" class="active">2</a>
-            <a href="#">3</a>
-            <a href="#">Další</a>
+            <a href="#" class="btn btn-light disabled">Předchozí</a>
+            <a href="#" class="btn btn-primary">1</a>
+            <a href="#" class="btn btn-light">2</a>
+            <a href="#" class="btn btn-light">3</a>
+            <a href="#" class="btn btn-light">Další</a>
         </div>
-    </main>
-</body>
-</html>
+    </div>
+{% endblock %}

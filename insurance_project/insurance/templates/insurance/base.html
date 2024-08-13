@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}PojistěníApp{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="{% url 'index' %}" class="logo">PojistěníApp</a>
+            <ul>
+                <li><a href="{% url 'insured_list' %}">Pojištěnci</a></li>
+                <li><a href="#">Pojištění</a></li>
+                <li><a href="#">Události</a></li>
+                <li><a href="{% url 'about' %}">O aplikaci...</a></li>
+            </ul>
+            <ul class="nav-right">
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'logout' %}">Odhlásit</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Přihlásit</a></li>
+                    <li><a href="{% url 'register' %}">Registrovat</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

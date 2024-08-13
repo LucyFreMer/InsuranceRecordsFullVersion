@@ -1,10 +1,38 @@
-<!DOCTYPE html>
-<html lang="cs">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'insurance/base.html' %}
 
-</body>
-</html>
+{% block title %}Detail pojištěnce{% endblock %}
+
+{% block content %}
+    <h1>{{ insured_person.first_name }} {{ insured_person.last_name }}</h1>
+
+    <p>{{ insured_person.address }}</p>
+    <p>{{ insured_person.email }}</p>
+    <p>{{ insured_person.phone_number }}</p>
+
+    <h2>Sjednaná pojištění</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pojištění</th>
+                <th>Částka</th>
+                <th>Akce</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for policy in insured_person.policies.all %}
+            <tr>
+                <td><a href="{% url 'policy_detail' policy.id %}">{{ policy.policy_type }}</a></td>
+                <td>{{ policy.coverage_amount }} Kč</td>
+                <td>
+                    <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning">Editovat</a>
+                    <a href="{% url 'delete_policy' policy.id %}" class="btn btn-danger">Odstranit</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'add_policy' insured_person.id %}" class="btn btn-primary">Přidat pojištění</a>
+    <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">Editovat pojištěnce</a>
+    <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
+{% endblock %}
