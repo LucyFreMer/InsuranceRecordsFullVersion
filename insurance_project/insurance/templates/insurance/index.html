@@ -22,7 +22,7 @@
                 {% for person in insured_people %}
                 <tr>
                     <td><a href="{% url 'insured_detail' person.id %}">{{ person.first_name }} {{ person.last_name }}</a></td>
-                    <td>{{ person.address }}</td>
+                    <td>{{ person.street_address }}, {{ person.city }}, {{ person.postal_code }}</td>
                     <td>
                         <a href="{% url 'edit_insured' person.id %}" class="btn btn-warning">Editovat</a>
                         <form action="{% url 'delete_insured' person.id %}" method="post" style="display:inline;">

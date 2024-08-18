@@ -1,0 +1,26 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}{% if form.instance.id %}Editace pojištěnce{% else %}Nový pojištěnec{% endif %}{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            {% if form.instance.id %}
+                Editace pojištěnce
+            {% else %}
+                Nový pojištěnec
+            {% endif %}
+        </h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.id %}
+                    Uložit změny
+                {% else %}
+                    Uložit
+                {% endif %}
+            </button>
+        </form>
+    </div>
+{% endblock %}

@@ -45,7 +45,7 @@ def edit_insured(request, id):
             return redirect('insured_detail', id=id)
     else:
         form = InsuredPersonForm(instance=insured_person)
-    return render(request, 'insurance/add_insured.html', {'form': form})
+    return render(request, 'insurance/edit_insured.html', {'form': form})
 
 
 # Odstranění pojištěnce

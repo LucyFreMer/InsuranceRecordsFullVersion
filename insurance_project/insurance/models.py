@@ -4,13 +4,15 @@ from django.db import models
 class InsuredPerson(models.Model):
     first_name = models.CharField("Jméno", max_length=100)
     last_name = models.CharField("Příjmení", max_length=100)
-    age = models.IntegerField("Věk")
+    email = models.EmailField("Email", default='unknown@example.com')
     phone_number = models.CharField("Telefonní číslo", max_length=16)
-    email = models.EmailField("Email", max_length=254, blank=True, null=True)
-    address = models.CharField("Adresa", max_length=255, blank=True, null=True)
+    street_address = models.CharField("Ulice a číslo popisné", max_length=255, default='Neznámá ulice')
+    city = models.CharField("Město", max_length=100, default='Neznámé město')
+    postal_code = models.CharField("PSČ", max_length=10, default='00000')
+
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}, věk: {self.age}, telefonní číslo: {self.phone_number}, email: {self.email or 'neuvedeno'}, adresa: {self.address or 'neuvedeno'}"
+        return f"{self.first_name} {self.last_name}, email: {self.email or 'neuvedeno'}, telefonní číslo: {self.phone_number}, ulice a číslo popisné: {self.street_address or 'neuvedeno'}, město: {self.city}, PSČ: {self.postal_code}"
 
     class Meta:
         verbose_name = "Pojištěná osoba"
