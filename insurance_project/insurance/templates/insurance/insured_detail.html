@@ -1,13 +1,25 @@
 {% extends 'insurance/base.html' %}
+{% load static %}
 
 {% block title %}Detail pojištěnce{% endblock %}
 
 {% block content %}
 <div class="container">
-    <h1>{{ insured_person.first_name }} {{ insured_person.last_name }}</h1>
-    <p>{{ insured_person.address }}</p>
-    <p>{{ insured_person.email }}</p>
-    <p>{{ insured_person.phone_number }}</p>
+    <div class="profile-header">
+        <div class="profile-image">
+            <img src="{% static 'images/profile_picture.png' %}" alt="{{ insured_person.first_name }} {{ insured_person.last_name }}">
+        </div>
+        <div class="profile-info">
+            <div class="left-info">
+                <h1>{{ insured_person.first_name }} {{ insured_person.last_name }}</h1>
+                <p>{{ insured_person.street_address }}<br>{{ insured_person.city }}<br>{{ insured_person.postal_code }}</p>
+            </div>
+            <div class="right-info">
+                <p>{{ insured_person.email }}</p>
+                <p>{{ insured_person.phone_number }}</p>
+            </div>
+        </div>
+    </div>
 
     <h2>Sjednaná pojištění</h2>
     <table class="table table-striped">

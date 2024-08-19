@@ -3,12 +3,25 @@
 {% block title %}Přihlášení{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <h2>Přihlášení</h2>
-        <form method="post">
+    <div class="container login-page">
+        <h1>Přihlášení</h1>
+        <form method="post" class="form-horizontal">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-primary">Přihlásit se</button>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.username.label_tag }}
+                    {{ form.username }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.password.label_tag }}
+                    {{ form.password }}
+                </div>
+            </div>
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary btn-save">Přihlásit se</button>
+            </div>
         </form>
         <p>Nemáte účet? <a href="{% url 'register' %}">Registrovat se</a></p>
     </div>

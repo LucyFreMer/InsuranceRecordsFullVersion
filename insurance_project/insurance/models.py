@@ -4,11 +4,11 @@ from django.db import models
 class InsuredPerson(models.Model):
     first_name = models.CharField("Jméno", max_length=100)
     last_name = models.CharField("Příjmení", max_length=100)
-    email = models.EmailField("Email", default='unknown@example.com')
+    email = models.EmailField("Email")
     phone_number = models.CharField("Telefonní číslo", max_length=16)
-    street_address = models.CharField("Ulice a číslo popisné", max_length=255, default='Neznámá ulice')
-    city = models.CharField("Město", max_length=100, default='Neznámé město')
-    postal_code = models.CharField("PSČ", max_length=10, default='00000')
+    street_address = models.CharField("Ulice a číslo popisné", max_length=255)
+    city = models.CharField("Město", max_length=100)
+    postal_code = models.CharField("PSČ", max_length=10)
 
 
     def __str__(self):

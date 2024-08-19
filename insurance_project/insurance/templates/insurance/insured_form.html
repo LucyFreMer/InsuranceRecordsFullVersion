@@ -1,0 +1,63 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}
+    {% if form.instance.id %}
+        Editace pojištěnce
+    {% else %}
+        Nový pojištěnec
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            {% if form.instance.id %}
+                Editace pojištěnce
+            {% else %}
+                Nový pojištěnec
+            {% endif %}
+        </h1>
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.street_address.label_tag }}
+                    {{ form.street_address }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.postal_code.label_tag }}
+                    {{ form.postal_code }}
+                </div>
+            </div>
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary btn-save">Uložit</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,11 +1,13 @@
 from django.urls import path
+from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
+from django.views.decorators.csrf import csrf_exempt
 from . import views
 
 
 urlpatterns = [
-    path('', views.index, name='index'),  # Úvodní stránka (zobrazuje seznam pojištěnců)
-    path('seznam/', views.index, name='insured_list'),  # Alternativní cesta pro seznam pojištěnců
+    path('', lambda request: redirect('insured_list'), name='index'),  # Přesměrování na seznam pojištěnců
+    path('seznam/', views.index, name='insured_list'),  # Cesta pro seznam pojištěnců
     path('pojistenec/<int:id>/', views.insured_detail, name='insured_detail'),  # Detail pojištěnce
     path('pojistenec/pridat/', views.add_insured, name='add_insured'),  # Přidání pojištěnce
     path('pojistenec/<int:id>/editovat/', views.edit_insured, name='edit_insured'),  # Editace pojištěnce
@@ -17,5 +19,5 @@ urlpatterns = [
     path('o-aplikaci/', views.about, name='about'), # O aplikaci
     path('registrovat/', views.register, name='register'),  # Pro registraci
     path('prihlasit/', auth_views.LoginView.as_view(template_name='insurance/login.html'), name='login'),  # Přihlášení
-    path('odhlasit/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),  # Odhlášení
+    path('odhlasit/', csrf_exempt(auth_views.LogoutView.as_view(next_page='/')), name='logout'),  # Odhlášení
 ]

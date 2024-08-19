@@ -32,7 +32,7 @@ def add_insured(request):
             return redirect('index')
     else:
         form = InsuredPersonForm()
-    return render(request, 'insurance/add_insured.html', {'form': form})
+    return render(request, 'insurance/insured_form.html', {'form': form})
 
 
 # Editace pojištěnce
@@ -45,7 +45,7 @@ def edit_insured(request, id):
             return redirect('insured_detail', id=id)
     else:
         form = InsuredPersonForm(instance=insured_person)
-    return render(request, 'insurance/edit_insured.html', {'form': form})
+    return render(request, 'insurance/insured_form.html', {'form': form})
 
 
 # Odstranění pojištěnce
