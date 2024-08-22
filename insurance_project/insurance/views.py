@@ -1,5 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
+from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import InsuredPerson, Policy
 from .forms import InsuredPersonForm, PolicyForm
@@ -29,6 +30,7 @@ def add_insured(request):
         form = InsuredPersonForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Pojištěnec byl úspěšně uložen.')
             return redirect('index')
     else:
         form = InsuredPersonForm()
