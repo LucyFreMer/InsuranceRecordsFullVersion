@@ -1,0 +1,53 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}
+    {% if form.instance.id %}
+        Editace pojištění
+    {% else %}
+        Nové pojištění
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            {% if form.instance.id %}
+                Editace pojištění
+            {% else %}
+                Nové pojištění
+            {% endif %}
+        </h1>
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.insurance_coverage.label_tag }}
+                    {{ form.insurance_coverage }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.premium.label_tag }}
+                    {{ form.premium }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.start_date.label_tag }}
+                    {{ form.start_date }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.end_date.label_tag }}
+                    {{ form.end_date }}
+                </div>
+            </div>
+            <div class="form-row">
+                <button type="submit" class="btn btn-primary btn-save">
+                    {% if form.instance.id %}
+                        Uložit změny
+                    {% else %}
+                        Uložit
+                    {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

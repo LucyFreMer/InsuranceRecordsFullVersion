@@ -1,5 +1,5 @@
 from django import forms
-from .models import InsuredPerson, Policy
+from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
 
 
 class InsuredPersonForm(forms.ModelForm):
@@ -28,15 +28,39 @@ class InsuredPersonForm(forms.ModelForm):
         }
 
 
+class InsuranceTypeForm(forms.ModelForm):
+    class Meta:
+        model = InsuranceType
+        fields = ['name', 'description']
+        labels = {
+            'name': 'Název pojištění',
+            'description': 'Popis pojištění',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'description': forms.Textarea(attrs={'class': 'form-control'}),
+        }
+
+
+class InsuranceCoverageForm(forms.ModelForm):
+    class Meta:
+        model = InsuranceCoverage
+        fields = ['insurance_type', 'name', 'description', 'premium']
+        labels = {
+            'insurance_type': 'Typ pojištění',
+            'name': 'Název pojistného krytí',
+            'description': 'Popis pojistného krytí',
+            'premium': 'Pojistné',
+        }
+
+
 class PolicyForm(forms.ModelForm):
     class Meta:
         model = Policy
-        fields = ['insured_person', 'policy_type', 'coverage_amount', 'premium', 'start_date', 'end_date']
+        fields = ['insured_person', 'insurance_coverage', 'start_date', 'end_date']
         labels = {
             'insured_person': 'Pojištěná osoba',
-            'policy_type': 'Typ pojištění',
-            'coverage_amount': 'Výše krytí',
-            'premium': 'Pojistné',
+            'insurance_coverage': 'Pojistné krytí',
             'start_date': 'Datum začátku pojištění',
             'end_date': 'Datum konce pojištění',
         }

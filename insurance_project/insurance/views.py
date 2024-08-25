@@ -2,8 +2,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import InsuredPerson, Policy
-from .forms import InsuredPersonForm, PolicyForm
+from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
+from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyForm
 from django.core.paginator import Paginator
 
 
@@ -57,6 +57,12 @@ def delete_insured(request, id):
     return redirect('index')
 
 
+# Seznam pojištění
+def insurance_list(request):
+    insurances = InsuranceType.objects.all()
+    return render(request, 'insurance/insurance_list.html', {'insurances': insurances})
+
+
 # Detail pojištění
 def policy_detail(request, id):
     policy = get_object_or_404(Policy, id=id)
@@ -64,12 +70,49 @@ def policy_detail(request, id):
 
 
 # Přidání pojištění
+def add_insurance(request):
+    if request.method == 'POST':
+        form = InsuranceTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('insurance_list')
+    else:
+        form = InsuranceTypeForm()
+    return render(request, 'insurance/insurance_form.html', {'form': form})
+
+
+# Úprava pojištění
+def edit_insurance(request, id):
+    insurance = get_object_or_404(InsuranceType, id=id)
+    if request.method == 'POST':
+        form = InsuranceTypeForm(request.POST, instance=insurance)
+        if form.is_valid():
+            form.save()
+            return redirect('insurance_list')
+    else:
+        form = InsuranceTypeForm(instance=insurance)
+    return render(request, 'insurance/insurance_form.html', {'form': form})
+
+
+def delete_insurance(request, id):
+    insurance_type = get_object_or_404(InsuranceType, id=id)
+
+    if request.method == 'POST':
+        insurance_type.delete()
+        messages.success(request, 'Typ pojištění byl úspěšně odstraněn.')
+        return redirect('insurance_list')
+
+    return render(request, 'insurance/confirm_delete.html', {'object': insurance_type, 'type': 'typ pojištění'})
+
+
+# Přidání pojistky k pojištěnci
 def add_policy(request, insured_id):
     insured_person = get_object_or_404(InsuredPerson, id=insured_id)
     if request.method == 'POST':
         form = PolicyForm(request.POST)
         if form.is_valid():
             policy = form.save(commit=False)
+            policy.premium = policy.insurance_coverage.default_premium
             policy.insured_person = insured_person
             policy.save()
             return redirect('insured_detail', id=insured_id)
@@ -78,7 +121,13 @@ def add_policy(request, insured_id):
     return render(request, 'insurance/add_policy.html', {'form': form, 'insured_person': insured_person})
 
 
-# Editace pojištění
+def insurance_coverage_list(request, id):
+    insurance_type = get_object_or_404(InsuranceType, id=id)
+    coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type)
+    return render(request, 'insurance/insurance_coverage_list.html', {'insurance_type': insurance_type, 'coverages': coverages})
+
+
+# Editace pojistky
 def edit_policy(request, id):
     policy = get_object_or_404(Policy, id=id)
     if request.method == 'POST':
@@ -91,7 +140,7 @@ def edit_policy(request, id):
     return render(request, 'insurance/add_policy.html', {'form': form})
 
 
-# Odstranění pojištění
+# Odstranění pojistky
 def delete_policy(request, id):
     policy = get_object_or_404(Policy, id=id)
     insured_id = policy.insured_person.id

@@ -1,0 +1,51 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}Pojištění domácích mazlíčků{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Pojištění domácích mazlíčků</h1>
+    <div class="insurance-grid">
+        {% for insurance in insurances %}
+        <div class="insurance-item">
+            <div class="insurance-info">
+                <strong class="insurance-name">
+                    <a href="{% url 'insurance_coverage_list' insurance.id %}">{{ insurance.name }}</a>
+                </strong>
+                <button class="toggle-description" aria-expanded="false">+</button>
+                <div class="insurance-description">
+                    {{ insurance.description }}
+                </div>
+            </div>
+            <div class="insurance-actions">
+                <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-primary">Editovat</a>
+                <a href="{% url 'delete_insurance' insurance.id %}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento typ pojištění odstranit?');">Odstranit</a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <a href="{% url 'add_insurance' %}" class="btn btn-primary btn-add-insurance">Přidat další pojištění</a>
+</div>
+{% endblock %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('JavaScript is loaded');
+        document.querySelectorAll('.toggle-description').forEach(button => {
+            button.addEventListener('click', function() {
+                const description = this.nextElementSibling;
+                const isExpanded = this.getAttribute('aria-expanded') === 'true';
+
+                if (isExpanded) {
+                    description.classList.remove('show');
+                    this.setAttribute('aria-expanded', 'false');
+                    this.textContent = '+';
+                } else {
+                    description.classList.add('show');
+                    this.setAttribute('aria-expanded', 'true');
+                    this.textContent = '−'; // Zobáček změní na "−" po rozbalení
+                }
+            });
+        });
+    });
+</script>

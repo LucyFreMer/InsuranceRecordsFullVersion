@@ -1,0 +1,16 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}Potvrzení smazání{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Opravdu chcete smazat tento záznam?</h1>
+    <p>{{ object }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Smazat</button>
+        <a href="{% url 'insured_list' %}" class="btn btn-secondary">Zpět</a>
+    </form>
+</div>
+{% endblock %}

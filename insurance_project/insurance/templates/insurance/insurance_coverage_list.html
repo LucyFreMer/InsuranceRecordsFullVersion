@@ -1,0 +1,17 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}{{ insurance_type.name }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="page-title">Pojistná krytí: {{ insurance_type.name }}</h1>
+    <div class="insurance-coverage-list">
+        {% for coverage in coverages %}
+        <div class="coverage-item">
+            <strong class="coverage-name">{{ coverage.name }}</strong>
+            <p class="coverage-description">{{ coverage.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -124,6 +124,9 @@ header {
     border-radius: 4px;
     position: relative;
     margin-top: 20px;
+    background-color: #dff0d8;
+    color: #3c763d;
+    margin-bottom: 20px;
 }
 
 .alert-success {
@@ -144,14 +147,6 @@ header {
     padding: 80px 20px 20px 20px;
     max-width: 1200px;
     margin: auto;
-}
-
-.alert {
-    padding: 15px;
-    background-color: #dff0d8;
-    color: #3c763d;
-    margin-bottom: 20px;
-    border-radius: 5px;
 }
 
 h1 {
@@ -494,4 +489,179 @@ th:nth-child(3), td:nth-child(3) {
 
 .login-page p {
     margin-top: 5px; 
+}
+
+.page-title {
+    font-size: 28px;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: bold;
+    text-align: center;
+}
+
+
+.btn-add-insurance {
+    display: block;
+    margin: 20px auto;
+    font-size: 18px;
+    padding: 10px 20px;
+    text-align: center;
+}
+
+.insurance-list {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.insurance-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+}
+
+.insurance-info a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.insurance-info a:hover {
+    text-decoration: underline; 
+}
+
+.insurance-name a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.insurance-name a:hover {
+    text-decoration: underline;
+}
+
+.insurance-description {
+    display: none;
+    transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.insurance-description.show {
+    display: block;
+    max-height: 200px;
+    opacity: 1;
+}
+
+.insurance-actions {
+    margin-top: 10px;
+}
+
+.insurance-actions .btn {
+    margin-left: 10px;
+}
+
+.insurance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); 
+    gap: 20px;
+}
+
+.insurance-item {
+    background-color: #edf7f8;
+    padding: 15px 20px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    position: relative;
+}
+
+.insurance-item a {
+    text-decoration: none;
+}
+
+.insurance-item:hover {
+    background-color: #e0f7fa;
+    border-color: #b3e5fc;
+}
+
+.insurance-item input[type="checkbox"]:checked + .insurance-description {
+    display: block;
+}
+
+.insurance-item input[type="checkbox"] {
+    display: none;
+}
+
+.insurance-item label {
+    cursor: pointer;
+    color: #007bff;
+    font-size: 16px;
+}
+
+.expand-info {
+    display: block;
+    font-size: 14px;
+    color: #007bff;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.toggle-checkbox {
+    display: none;
+}
+
+.toggle-description {
+    background: none;
+    border: none;
+    color: #007bff;
+    font-size: 18px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.insurance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    color: #007bff;
+    margin: 0;
+}
+
+.toggle-checkbox:checked + .insurance-header + .insurance-description {
+    display: block;
+}
+
+.insurance-coverage-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.coverage-item {
+    background-color: #edf7f8;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.coverage-item:hover {
+    background-color: #e0f7fa;
+    border-color: #b3e5fc;
+}
+
+.coverage-name {
+    font-size: 18px;
+    color: #007bff;
+    margin-bottom: 5px;
+}
+
+.coverage-description {
+    font-size: 16px;
+    color: #555;
 }

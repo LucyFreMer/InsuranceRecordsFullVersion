@@ -10,7 +10,6 @@ class InsuredPerson(models.Model):
     city = models.CharField("Město", max_length=100)
     postal_code = models.CharField("PSČ", max_length=10)
 
-
     def __str__(self):
         return f"{self.first_name} {self.last_name}, email: {self.email or 'neuvedeno'}, telefonní číslo: {self.phone_number}, ulice a číslo popisné: {self.street_address or 'neuvedeno'}, město: {self.city}, PSČ: {self.postal_code}"
 
@@ -19,16 +18,41 @@ class InsuredPerson(models.Model):
         verbose_name_plural = "Pojištěné osoby"
 
 
+class InsuranceType(models.Model):
+    name = models.CharField("Název typu pojištění", max_length=100)
+    description = models.TextField("Popis typu pojištění", blank=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "Typ pojištění"
+        verbose_name_plural = "Typy pojištění"
+
+
+class InsuranceCoverage(models.Model):
+    insurance_type = models.ForeignKey(InsuranceType, related_name='coverages', on_delete=models.CASCADE, verbose_name="Typ pojištění")
+    name = models.CharField("Název pojistného krytí", max_length=100)
+    description = models.TextField("Popis pojistného krytí", blank=True)
+    premium = models.FloatField("Pojistné", default=0.0)
+
+    def __str__(self):
+        return f"{self.name} - {self.insurance_type.name}"
+
+    class Meta:
+        verbose_name = "Pojistné krytí"
+        verbose_name_plural = "Pojistná krytí"
+
+
 class Policy(models.Model):
     insured_person = models.ForeignKey(InsuredPerson, related_name='policies', on_delete=models.CASCADE, verbose_name="Pojištěná osoba")
-    policy_type = models.CharField("Typ pojištění", max_length=100)
-    coverage_amount = models.FloatField("Výše krytí")
-    premium = models.FloatField("Pojistné")
+    insurance_coverage = models.ForeignKey(InsuranceCoverage, on_delete=models.CASCADE, verbose_name="Pojistné krytí", null=True, blank=True)
+    premium = models.FloatField("Pojistné", editable=False)
     start_date = models.DateField("Datum začátku pojištění")
     end_date = models.DateField("Datum konce pojištění")
 
     def __str__(self):
-        return f"Typ pojištění: {self.policy_type}, Výše krytí: {self.coverage_amount} Kč, Pojistné: {self.premium} Kč, Platnost od: {self.start_date} do: {self.end_date}"
+        return f"{self.insurance_coverage.name} - Výše pojistného: {self.premium} Kč"
 
     class Meta:
         verbose_name = "Pojistka"
