@@ -20,13 +20,13 @@
                 {{ insurance.description }}
             </div>
             <div class="insurance-actions">
-                <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-primary">Editovat</a>
+                <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-warning">Editovat</a>
                 <a href="{% url 'delete_insurance' insurance.id %}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento typ pojištění odstranit?');">Odstranit</a>
             </div>
         </div>
         {% endfor %}
     </div>
-    <a href="{% url 'add_insurance' %}" class="btn btn-primary btn-add-insurance">Přidat další pojištění</a>
+    <a href="{% url 'add_insurance' %}" class="btn btn-primary btn-add-insurance">Přidat nové pojištění</a>
 </div>
 
 <script>

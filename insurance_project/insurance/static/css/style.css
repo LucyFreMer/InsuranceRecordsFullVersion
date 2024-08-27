@@ -492,19 +492,25 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 .page-title {
-    font-size: 28px;
+    font-size: 32px;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     font-weight: bold;
-    text-align: center;
+    text-align: left;
 }
 
 .btn-add-insurance {
     display: block;
     margin: 20px auto;
     font-size: 18px;
-    padding: 10px 20px;
+    padding: 15px 30px;
     text-align: center;
+    text-decoration: none;
+    width: 170px;    
+}
+
+.btn-add-insurance:hover {
+    text-decoration: none;
 }
 
 .insurance-list {
@@ -520,20 +526,76 @@ th:nth-child(3), td:nth-child(3) {
     position: relative;
 }
 
+.insurance-name {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    white-space: nowrap;
+}
+
 .insurance-name a {
     color: #007bff;
     text-decoration: none;
     font-weight: bold;
+    color: #007bff;
 }
 
 .insurance-name a:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    color: #0056b3;
+}
+
+.insurance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin-bottom: 15px;
+    padding: 10px 0px;
+}
+
+.insurance-header a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.insurance-header a:hover {
+    color: #0056b3; 
+}
+
+.insurance-header .toggle-description {
+    margin-left: 10px; 
 }
 
 .insurance-description {
     display: none; 
     margin-top: 10px;
+    margin-bottom: 20px; 
     clear: both; 
+    font-size: 15px; 
+    color: #333; 
+    line-height: 1.5; 
+    font-family: 'Arial', sans-serif; 
+    font-weight: normal; 
+    text-align: justify; 
+    background-color: #f9f9f9;
+    padding: 15px;
+    border: 1px solid #dde3e8; 
+    border-radius: 8px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.insurance-description a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.insurance-description a:hover {
+    text-decoration: underline;
+    color: #0056b3;
 }
 
 .insurance-description.show {
@@ -541,11 +603,14 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 .insurance-actions {
-    margin-top: 10px;
+    margin-top: 25px;
+    padding: 0 0 10px 0;
+    text-align: center;
 }
 
 .insurance-actions .btn {
-    margin-left: 10px;
+    margin-left: 5x;
+    margin-right: 5px;
 }
 
 .insurance-grid {
@@ -574,23 +639,27 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 .toggle-description {
+    position: absolute;
+    right: 10px;
+    margin-left: auto; 
     cursor: pointer;
     background: none;
     border: none;
-    margin-left: 10px; 
+    outline: none;
 }
 
 .toggle-description[aria-expanded="true"] {
     transform: rotate(180deg); 
 }
 
-.insurance-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+.btn-save-insurance {
+    font-size: 16px;
+    display: block;
+    text-align: left;
+    margin-left: 0;
+    margin-top: -20px;
+    font-weight: bold;
 }
-
 
 .insurance-coverage-list {
     display: flex;
