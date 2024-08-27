@@ -19,16 +19,16 @@ header {
 
 .navbar {
     background-color: #333;
-    padding: 10px 20px;
+    padding: 10px 20px; 
     position: fixed;
     width: calc(100% - 40px);
-    height: auto;
     top: 0;
-    left: 0px;
-    z-index: 1000;
+    left: 0;
+    z-index: 20;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .navbar ul {
@@ -44,7 +44,7 @@ header {
 }
 
 .navbar ul li {
-    width: 100px;
+    min-width: 120px;
     text-align: center;
 }
 
@@ -63,6 +63,7 @@ header {
 }
 
 .navbar a:hover {
+    text-decoration: none;
     color: #e4f7ff;
 }
 
@@ -119,15 +120,23 @@ header {
 }
 
 .alert {
-    padding: 15px;
-    margin-bottom: 20px;
+    position: fixed;
+    top: 80px;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
     border-radius: 4px;
-    position: relative;
-    margin-top: 20px;
     background-color: #dff0d8;
     color: #3c763d;
-    margin-bottom: 20px;
+    border: 1px solid #d6e9c6;
+    z-index: 15;
+    text-align: left;
+    padding-left: 20px;
+    box-sizing: border-box;
+    transition: opacity 1s ease-out;
 }
+
 
 .alert-success {
     background-color: #dff0d8;
@@ -150,8 +159,40 @@ header {
 }
 
 h1 {
+    font-size: 2em;
     color: #333;
     margin-bottom: 20px;
+}
+
+h2 {
+    font-size: 1.5em;
+    color: #007bff;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+p, ul {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+ul {
+    padding-left: 30px;
+}
+
+li {
+    margin-bottom: 5px;
+}
+
+a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
 }
 
 .btn {
@@ -179,14 +220,28 @@ h1 {
 }
 
 .btn-group-centered {
+    
     display: flex;
     justify-content: center; 
     margin-top: 20px;
+    font-size: 18px;
 }
 
 .btn-group-centered a {
     margin-right: 10px;
     text-decoration: none;
+}
+
+.btn:hover {
+    text-decoration: none;
+    filter: brightness(1.15);
+    transition: filter 0.3s ease;
+}
+
+.btn-create-policy {
+    background-color: #fd7e14;
+    color: white;
+    border-color: #fd7e14;
 }
 
 table {
@@ -213,7 +268,8 @@ th {
 
 td a {
     text-decoration: none;
-    color: #007bff;
+    color: #5c81a8;
+    font-weight: bold;
 }
 
 td button {
@@ -225,10 +281,23 @@ th:nth-child(1), td:nth-child(1) {
 }
 
 th:nth-child(2), td:nth-child(2) {
-    width: 45%; 
+    width: 40%; 
 }
 
 th:nth-child(3), td:nth-child(3) {
+    width: 30%; 
+}
+
+
+.insured-detail-table th:nth-child(1), td:nth-child(1) {
+    width: 50%; 
+}
+
+.insured-detail-table th:nth-child(2), td:nth-child(2) {
+    width: 25%; 
+}
+
+.insured-detail-table th:nth-child(3), td:nth-child(3) {
     width: 25%; 
 }
 
@@ -430,7 +499,8 @@ th:nth-child(3), td:nth-child(3) {
 
 .btn-group-centered .btn {
     padding: 14px 26px;
-    font-size: 14px;
+    font-size: 16px;
+    
 }
 
 .table-striped tbody tr {
@@ -499,17 +569,48 @@ th:nth-child(3), td:nth-child(3) {
     text-align: left;
 }
 
+.btn-container {
+    display: flex;
+    justify-content: center;
+}
+
+.btn-container-center {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
 .btn-add-insurance {
-    display: block;
+    font-size: 18px;
+    padding: 15px 30px;
+    text-align: center;
+    text-decoration: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    white-space: nowrap;
+}
+
+.btn-add-coverage {
+    display: inline-block;
     margin: 20px auto;
     font-size: 18px;
     padding: 15px 30px;
     text-align: center;
     text-decoration: none;
-    width: 170px;    
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    white-space: nowrap;
 }
 
 .btn-add-insurance:hover {
+    text-decoration: none;
+}
+
+.btn-add-coverage:hover {
     text-decoration: none;
 }
 
@@ -581,11 +682,10 @@ th:nth-child(3), td:nth-child(3) {
     font-family: 'Arial', sans-serif; 
     font-weight: normal; 
     text-align: justify; 
-    background-color: #f9f9f9;
+    background-color: #e0f7fa;
     padding: 15px;
-    border: 1px solid #dde3e8; 
     border-radius: 8px; 
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    
 }
 
 .insurance-description a {
@@ -615,15 +715,16 @@ th:nth-child(3), td:nth-child(3) {
 
 .insurance-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); 
+    grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    align-items: start;
 }
 
 .insurance-item {
-    background-color: #edf7f8;
+    background-color: #e0f7fa;
     padding: 15px 20px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #b3e5fc;
     transition: background-color 0.3s ease, border-color 0.3s ease;
     position: relative;
     display: block;
@@ -634,8 +735,8 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 .insurance-item:hover {
-    background-color: #e0f7fa;
-    border-color: #b3e5fc;
+    background-color: #cbeeff;
+    border-color: #9fcfff;
 }
 
 .toggle-description {
@@ -668,16 +769,17 @@ th:nth-child(3), td:nth-child(3) {
 }
 
 .coverage-item {
-    background-color: #edf7f8;
+    background-color: #e0f7fa;
     padding: 15px;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    border: 1px solid #b3e5fc;
+    margin-bottom: 10px;
     transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .coverage-item:hover {
-    background-color: #e0f7fa;
-    border-color: #b3e5fc;
+    background-color: #cbeeff;
+    border-color: #9fcfff;
 }
 
 .coverage-name {
@@ -689,4 +791,73 @@ th:nth-child(3), td:nth-child(3) {
 .coverage-description {
     font-size: 16px;
     color: #555;
+    margin-bottom: 0px;
 }
+
+.btn-save-coverage {
+    margin-top: 10px; 
+    font-size: 16px;
+    display: block;
+    text-align: left;
+    margin-left: 0;
+    font-weight: bold;
+    background-color: #007bff;
+    color: white;
+    border-radius: 4px;
+    border: none;
+    white-space: nowrap;
+    padding: 10px 20px;
+}
+
+.coverage-actions {
+    display: flex;
+    justify-content: center;
+    gap: 20px; 
+    margin-top: 12px;
+}
+
+.coverage-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 40px;
+    text-align: center;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 16px;
+    color: white;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+
+.coverage-actions .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    margin: 0; 
+}
+
+.form-delete {
+    margin-top: 20px;
+}
+
+.form-delete button {
+    margin-right: 10px;
+    padding: 10px 20px;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    color: white;
+    border: none;
+}
+
+.form-delete button.btn-danger {
+    background-color: #dc3545; 
+}
+
+.form-delete button.btn-back {
+    background-color: #007bff; 
+}
+

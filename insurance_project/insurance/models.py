@@ -11,7 +11,7 @@ class InsuredPerson(models.Model):
     postal_code = models.CharField("PSČ", max_length=10)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}, email: {self.email or 'neuvedeno'}, telefonní číslo: {self.phone_number}, ulice a číslo popisné: {self.street_address or 'neuvedeno'}, město: {self.city}, PSČ: {self.postal_code}"
+        return f"{self.first_name} {self.last_name}"
 
     class Meta:
         verbose_name = "Pojištěná osoba"
@@ -37,7 +37,7 @@ class InsuranceCoverage(models.Model):
     premium = models.FloatField("Pojistné", default=0.0)
 
     def __str__(self):
-        return f"{self.name} - {self.insurance_type.name}"
+        return f"{self.insurance_type.name} - {self.name}"
 
     class Meta:
         verbose_name = "Pojistné krytí"

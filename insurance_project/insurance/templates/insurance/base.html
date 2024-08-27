@@ -15,8 +15,8 @@
             <ul>
                 <li><a href="{% url 'insured_list' %}" class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">Pojištěnci</a></li>
                 <li><a href="{% url 'insurance_list' %}" class="{% if request.resolver_match.url_name == 'insurance_list' %}active{% endif %}">Pojištění</a></li>
-                <li><a href="#" class="{% if request.resolver_match.url_name == 'udalosti' %}active{% endif %}">Události</a></li>
-                <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">O aplikaci...</a></li>
+                <li><a href="{% url 'how_to_insurance' %}" class="{% if request.resolver_match.url_name == 'how_to_insurance' %}active{% endif %}">Jak na pojištění</a></li>
+                <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">O aplikaci</a></li>
             </ul>
             <ul class="nav-right">
                 {% if user.is_authenticated %}
@@ -51,5 +51,17 @@
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+    setTimeout(function() {
+        const alert = document.querySelector('.alert');
+        if (alert) {
+            alert.style.opacity = '0'; // Spustí plynulé mizení
+            setTimeout(function() {
+                alert.style.display = 'none'; // Úplně skryje element po dokončení přechodu
+            }, 1000); // Tento čas musí být stejný jako doba přechodu v CSS (1s)
+        }
+    }, 5000); // Hláška začne mizet po 5 sekundách
+    </script>
 </body>
 </html>

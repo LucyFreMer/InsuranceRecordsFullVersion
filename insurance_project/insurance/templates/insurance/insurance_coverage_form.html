@@ -1,0 +1,89 @@
+{% extends 'insurance/base.html' %}
+
+{% block title %}
+    {% if form.instance.id %}
+        Editace pojistného krytí
+    {% else %}
+        Nové pojistné krytí
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <h1>
+            {% if form.instance.id %}
+                Editace pojistného krytí
+            {% else %}
+                Nové pojistné krytí
+            {% endif %}
+        </h1>
+
+        <!-- Přidání tohoto zobrazí všechny chyby formuláře na začátku formuláře -->
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                <strong>Došlo k chybě:</strong>
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post" class="form-horizontal">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.name.label_tag }}
+                    {{ form.name }}
+                    <!-- Přidání chyb pro pole "name" -->
+                    {% if form.name.errors %}
+                        <div class="text-danger">{{ form.name.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    {{ form.description.label_tag }}
+                    {{ form.description }}
+                    <!-- Přidání chyb pro pole "description" -->
+                    {% if form.description.errors %}
+                        <div class="text-danger">{{ form.description.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.premium.label_tag }}
+                    {{ form.premium }}
+                    <!-- Přidání chyb pro pole "premium" -->
+                    {% if form.premium.errors %}
+                        <div class="text-danger">{{ form.premium.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <input type="hidden" name="insurance_type" value="{{ insurance_type.id }}">
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <button type="submit" class="btn btn-save-coverage">
+                        {% if form.instance.id %}
+                            Uložit změny
+                        {% else %}
+                            Uložit
+                        {% endif %}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

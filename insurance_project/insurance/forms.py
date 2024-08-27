@@ -1,6 +1,7 @@
 from django import forms
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
-
+from django.utils.timezone import now
+from datetime import timedelta
 
 class InsuredPersonForm(forms.ModelForm):
     class Meta:
@@ -47,10 +48,14 @@ class InsuranceCoverageForm(forms.ModelForm):
         model = InsuranceCoverage
         fields = ['insurance_type', 'name', 'description', 'premium']
         labels = {
-            'insurance_type': 'Typ pojištění',
             'name': 'Název pojistného krytí',
             'description': 'Popis pojistného krytí',
-            'premium': 'Pojistné',
+            'premium': 'Roční pojistné',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte název pojistného krytí'}),
+            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Zadejte popis pojistného krytí'}),
+            'premium': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte výši pojistného'}),
         }
 
 
@@ -64,3 +69,14 @@ class PolicyForm(forms.ModelForm):
             'start_date': 'Datum začátku pojištění',
             'end_date': 'Datum konce pojištění',
         }
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(PolicyForm, self).__init__(*args, **kwargs)
+        # Nastavení defaultních hodnot při vytvoření nové pojistky
+        if not self.instance.id:
+            self.fields['start_date'].initial = now().date()
+            self.fields['end_date'].initial = now().date() + timedelta(days=365)

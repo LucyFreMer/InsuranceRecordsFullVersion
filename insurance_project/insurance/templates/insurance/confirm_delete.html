@@ -5,12 +5,12 @@
 {% block content %}
 <div class="container">
     <h1>Opravdu chcete smazat tento záznam?</h1>
-    <p>{{ object }}</p>
+    <p><strong>{{ object }}</strong></p>
 
-    <form method="post">
+    <form method="post" class="form-delete">
         {% csrf_token %}
+        <button type="button" class="btn btn-back" onclick="window.location.href='{% url 'insured_list' %}'">Zpět</button>
         <button type="submit" class="btn btn-danger">Smazat</button>
-        <a href="{% url 'insured_list' %}" class="btn btn-secondary">Zpět</a>
     </form>
 </div>
 {% endblock %}

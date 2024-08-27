@@ -4,14 +4,25 @@
 
 {% block content %}
 <div class="container">
-    <h1 class="page-title">Pojistná krytí: {{ insurance_type.name }}</h1>
+    <h1 class="page-title">{{ insurance_type.name }}</h1>
     <div class="insurance-coverage-list">
         {% for coverage in coverages %}
         <div class="coverage-item">
             <strong class="coverage-name">{{ coverage.name }}</strong>
             <p class="coverage-description">{{ coverage.description }}</p>
+            <div class="coverage-actions">
+                <a href="{% url 'add_policy' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojistku</a>
+                <a href="{% url 'edit_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-warning">Editovat</a>
+                <form method="post" action="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Opravdu chcete toto pojistné krytí odstranit?');">Odstranit</button>
+                </form>
+            </div>
         </div>
         {% endfor %}
+    </div>
+    <div class="btn-container-center">
+        <a href="{% url 'add_insurance_coverage' insurance_type.id %}" class="btn btn-primary btn-add-insurance">Přidat nové pojistné krytí</a>
     </div>
 </div>
 {% endblock %}

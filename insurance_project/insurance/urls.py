@@ -19,12 +19,16 @@ urlpatterns = [
     path('pojisteni/odstranit/<int:id>/', views.delete_insurance, name='delete_insurance'),  # Odstranění typu pojištění
 
     path('pojisteni/<int:id>/kryti/', views.insurance_coverage_list, name='insurance_coverage_list'),  # Zobrazení seznamu pojistných krytí
+    path('pojisteni/<int:insurance_id>/kryti/pridat/', views.add_or_edit_coverage, name='add_insurance_coverage'),
+    path('pojisteni/<int:insurance_id>/kryti/<int:coverage_id>/editovat/', views.add_or_edit_coverage, name='edit_insurance_coverage'),
+    path('pojisteni/<int:insurance_id>/kryti/<int:coverage_id>/odstranit/', views.delete_coverage, name='delete_insurance_coverage'),
 
     path('pojisteni/<int:id>/', views.policy_detail, name='policy_detail'),  # Detail konkrétního pojištění (pojistky)
-    path('pojistenec/<int:insured_id>/pojisteni/pridat/', views.add_policy, name='add_policy'),  # Přidání pojistky k pojištěnci
-    path('pojisteni/<int:id>/editovat/', views.edit_policy, name='edit_policy'),  # Editace pojistky
+    path('pojistenci/<int:insured_id>/zridit_pojistku/', views.add_policy, name='add_policy'),  # Přidání pojistky k pojištěnci
+    path('pojistky/<int:id>/editovat/', views.edit_policy, name='edit_policy'),  # Editace pojistky
     path('pojisteni/<int:id>/odstranit/', views.delete_policy, name='delete_policy'),  # Odstranění pojistky
 
+    path('jak-na-pojisteni/', views.how_to_insurance, name='how_to_insurance'),
     path('o-aplikaci/', views.about, name='about'), # O aplikaci
 
     path('registrovat/', views.register, name='register'),  # Pro registraci

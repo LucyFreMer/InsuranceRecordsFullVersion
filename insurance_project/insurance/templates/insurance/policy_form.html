@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if form.instance.id %}
-        Editace pojištění
+        Editace pojistky
     {% else %}
-        Nové pojištění
+        Nová pojistka
     {% endif %}
 {% endblock %}
 
@@ -12,42 +12,76 @@
     <div class="container">
         <h1>
             {% if form.instance.id %}
-                Editace pojištění
+                Editace pojistky
             {% else %}
-                Nové pojištění
+                Nová pojistka
             {% endif %}
         </h1>
         <form method="post" class="form-horizontal">
             {% csrf_token %}
+
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-12">
+                    {{ form.insured_person.label_tag }}
+                    {{ form.insured_person }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
                     {{ form.insurance_coverage.label_tag }}
                     {{ form.insurance_coverage }}
                 </div>
-                <div class="form-group col-md-6">
-                    {{ form.premium.label_tag }}
-                    {{ form.premium }}
-                </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group col-md-6">
+                <div class="form-group col-md-12">
                     {{ form.start_date.label_tag }}
                     {{ form.start_date }}
                 </div>
-                <div class="form-group col-md-6">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
                     {{ form.end_date.label_tag }}
                     {{ form.end_date }}
                 </div>
             </div>
+
             <div class="form-row">
-                <button type="submit" class="btn btn-primary btn-save">
-                    {% if form.instance.id %}
-                        Uložit změny
-                    {% else %}
-                        Uložit
-                    {% endif %}
-                </button>
+                <div class="form-group col-md-12">
+                    {{ form.premium.label_tag }}
+                    {{ form.premium }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <button type="submit" class="btn btn-save-coverage">
+                        {% if form.instance.id %}
+                            Uložit změny
+                        {% else %}
+                            Uložit
+                        {% endif %}
+                    </button>
+                </div>
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const startDateInput = document.getElementById('id_start_date');
+            const endDateInput = document.getElementById('id_end_date');
+
+            if (startDateInput) {
+                startDateInput.addEventListener('change', function() {
+                    const startDate = new Date(this.value);
+                    const endDate = new Date(startDate);
+                    endDate.setFullYear(startDate.getFullYear() + 1);
+                    endDateInput.value = endDate.toISOString().split('T')[0];
+                });
+            }
+        });
+    </script>
 {% endblock %}

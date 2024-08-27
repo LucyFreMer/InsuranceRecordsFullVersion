@@ -21,8 +21,11 @@ def index(request):
 # Detail pojištěnce
 def insured_detail(request, id):
     insured_person = get_object_or_404(InsuredPerson, id=id)
-    return render(request, 'insurance/insured_detail.html', {'insured_person': insured_person})
-
+    policies = Policy.objects.filter(insured_person=insured_person)
+    return render(request, 'insurance/insured_detail.html', {
+        'insured_person': insured_person,
+        'policies': policies,
+    })
 
 # Přidání nového pojištěnce
 def add_insured(request):
@@ -105,6 +108,41 @@ def delete_insurance(request, id):
     return render(request, 'insurance/confirm_delete.html', {'object': insurance_type, 'type': 'typ pojištění'})
 
 
+# Přidání a úprava pojistného krytí
+def add_or_edit_coverage(request, insurance_id, coverage_id=None):
+    insurance_type = get_object_or_404(InsuranceType, id=insurance_id)
+    if coverage_id:
+        coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
+    else:
+        coverage = InsuranceCoverage(insurance_type=insurance_type)
+
+    if request.method == 'POST':
+        form = InsuranceCoverageForm(request.POST, instance=coverage)
+        if form.is_valid():
+            coverage = form.save(commit=False)
+            coverage.insurance_type = insurance_type
+            coverage.save()
+            messages.success(request, 'Pojistné krytí bylo úspěšně uloženo.')
+            return redirect('insurance_coverage_list', id=insurance_id)
+    else:
+        form = InsuranceCoverageForm(instance=coverage)
+
+    return render(request, 'insurance/insurance_coverage_form.html', {'form': form, 'insurance_type': insurance_type})
+
+
+
+# Odstranění pojistného krytí
+def delete_coverage(request, insurance_id, coverage_id):
+    coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
+
+    if request.method == 'POST':
+        coverage.delete()
+        messages.success(request, 'Pojistné krytí bylo úspěšně odstraněno.')
+        return redirect('insurance_coverage_list', id=insurance_id)
+
+    return render(request, 'insurance/confirm_delete.html', {'object': coverage, 'type': 'pojistné krytí'})
+
+
 # Přidání pojistky k pojištěnci
 def add_policy(request, insured_id):
     insured_person = get_object_or_404(InsuredPerson, id=insured_id)
@@ -112,19 +150,14 @@ def add_policy(request, insured_id):
         form = PolicyForm(request.POST)
         if form.is_valid():
             policy = form.save(commit=False)
-            policy.premium = policy.insurance_coverage.default_premium
             policy.insured_person = insured_person
             policy.save()
+            messages.success(request, 'Pojistka byla úspěšně vytvořena.')
             return redirect('insured_detail', id=insured_id)
     else:
         form = PolicyForm()
-    return render(request, 'insurance/add_policy.html', {'form': form, 'insured_person': insured_person})
 
-
-def insurance_coverage_list(request, id):
-    insurance_type = get_object_or_404(InsuranceType, id=id)
-    coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type)
-    return render(request, 'insurance/insurance_coverage_list.html', {'insurance_type': insurance_type, 'coverages': coverages})
+    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': insured_person})
 
 
 # Editace pojistky
@@ -134,10 +167,37 @@ def edit_policy(request, id):
         form = PolicyForm(request.POST, instance=policy)
         if form.is_valid():
             form.save()
-            return redirect('policy_detail', id=id)
+            return redirect('insured_detail', id=policy.insured_person.id)
     else:
-        form = PolicyForm(instance=policy)
-    return render(request, 'insurance/add_policy.html', {'form': form})
+        form = PolicyForm(instance=policy)  # Načtení stávajících hodnot do formuláře
+    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': policy.insured_person})
+
+
+def insurance_coverage_list(request, id):
+    insurance_type = get_object_or_404(InsuranceType, id=id)
+    coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type)
+    insured_person = ...
+    return render(request, 'insurance/insurance_coverage_list.html', {
+        'insurance_type': insurance_type,
+        'coverages': coverages,
+        'insured_person': insured_person
+    })
+
+# Editace pojistky
+def add_policy(request, insured_id):
+    insured_person = get_object_or_404(InsuredPerson, id=insured_id)
+    if request.method == 'POST':
+        form = PolicyForm(request.POST)
+        if form.is_valid():
+            policy = form.save(commit=False)
+            # Nastavení pojistného (premium)
+            policy.premium = policy.insurance_coverage.premium  # Nebo jiný logický výpočet
+            policy.insured_person = insured_person
+            policy.save()
+            return redirect('insured_detail', id=insured_id)
+    else:
+        form = PolicyForm()
+    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': insured_person})
 
 
 # Odstranění pojistky
@@ -146,6 +206,12 @@ def delete_policy(request, id):
     insured_id = policy.insured_person.id
     policy.delete()
     return redirect('insured_detail', id=insured_id)
+
+
+# Jak na pojištění
+def how_to_insurance(request):
+    return render(request, 'insurance/how_to_insurance.html')
+
 
 # O aplikaci
 def about(request):
