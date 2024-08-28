@@ -71,12 +71,12 @@ class PolicyForm(forms.ModelForm):
         }
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),  # Nastavení end_date jako readonly
         }
 
     def __init__(self, *args, **kwargs):
         super(PolicyForm, self).__init__(*args, **kwargs)
         # Nastavení defaultních hodnot při vytvoření nové pojistky
         if not self.instance.id:
-            self.fields['start_date'].initial = now().date()
-            self.fields['end_date'].initial = now().date() + timedelta(days=365)
+            self.fields['start_date'].initial = now().date() + timedelta(days=1)
+            self.fields['end_date'].initial = now().date() + timedelta(days=366)

@@ -22,9 +22,12 @@ def index(request):
 def insured_detail(request, id):
     insured_person = get_object_or_404(InsuredPerson, id=id)
     policies = Policy.objects.filter(insured_person=insured_person)
+    total_premium = sum(policy.premium for policy in policies)
+
     return render(request, 'insurance/insured_detail.html', {
         'insured_person': insured_person,
         'policies': policies,
+        'total_premium': total_premium,
     })
 
 # Přidání nového pojištěnce
@@ -182,6 +185,7 @@ def insurance_coverage_list(request, id):
         'coverages': coverages,
         'insured_person': insured_person
     })
+
 
 # Editace pojistky
 def add_policy(request, insured_id):

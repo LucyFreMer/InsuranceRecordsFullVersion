@@ -31,7 +31,7 @@
             </tr>
         </thead>
         <tbody>
-            {% for policy in insured_person.policies.all %}
+            {% for policy in policies %}
             <tr>
                 <td><a href="{% url 'policy_detail' policy.id %}">{{ policy.insurance_coverage.name }}</a></td>
                 <td>{{ policy.premium|floatformat:0 }} Kč</td>
@@ -41,6 +41,12 @@
                 </td>
             </tr>
             {% endfor %}
+            <!-- Celkové pojistné -->
+            <tr>
+                <td class="text-right"><strong>Roční pojistné celkem:</strong></td>
+                <td><strong>{{ total_premium|floatformat:0 }} Kč</strong></td>
+                <td></td> <!-- Prázdná buňka, aby bylo vše správně zarovnáno -->
+            </tr>
         </tbody>
     </table>
 
@@ -48,8 +54,8 @@
         <a href="{% url 'add_policy' insured_person.id %}" class="btn btn-primary">Přidat pojištění</a>
         <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">Editovat pojištěnce</a>
         <form method="post" action="{% url 'delete_insured' insured_person.id %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger" onclick="return confirm('Opravdu chcete tohoto pojištěnce odstranit?');">Odstranit pojištěnce</button>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" onclick="return confirm('Opravdu chcete tohoto pojištěnce odstranit?');">Odstranit pojištěnce</button>
         </form>
     </div>
 </div>

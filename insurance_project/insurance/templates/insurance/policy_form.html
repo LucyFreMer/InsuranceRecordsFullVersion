@@ -2,9 +2,9 @@
 
 {% block title %}
     {% if form.instance.id %}
-        Editace pojistky
+        Editace sjednaného pojištění
     {% else %}
-        Nová pojistka
+        Výběr pojištění
     {% endif %}
 {% endblock %}
 
@@ -12,9 +12,9 @@
     <div class="container">
         <h1>
             {% if form.instance.id %}
-                Editace pojistky
+                Editace sjednaného pojištění
             {% else %}
-                Nová pojistka
+                Výběr pojištění
             {% endif %}
         </h1>
         <form method="post" class="form-horizontal">
@@ -29,8 +29,12 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    {{ form.insurance_coverage.label_tag }}
-                    {{ form.insurance_coverage }}
+                    <label for="id_insurance_coverage">Pojistné krytí:</label>
+                    <select id="id_insurance_coverage" name="insurance_coverage" class="form-control">
+                        {% for coverage in form.fields.insurance_coverage.queryset %}
+                        <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}">{{ coverage }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
@@ -50,18 +54,17 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    {{ form.premium.label_tag }}
-                    {{ form.premium }}
+                    <p id="premium-label">Roční pojistné: <span id="premium-display">0</span> Kč</p>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <button type="submit" class="btn btn-save-coverage">
+                    <button type="submit" class="btn btn-primary">
                         {% if form.instance.id %}
-                            Uložit změny
+                            Potvrdit změny
                         {% else %}
-                            Uložit
+                            Potvrdit
                         {% endif %}
                     </button>
                 </div>
@@ -73,14 +76,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             const startDateInput = document.getElementById('id_start_date');
             const endDateInput = document.getElementById('id_end_date');
+            const premiumDisplay = document.getElementById('premium-display');
+            const coverageSelect = document.getElementById('id_insurance_coverage');
 
-            if (startDateInput) {
-                startDateInput.addEventListener('change', function() {
-                    const startDate = new Date(this.value);
-                    const endDate = new Date(startDate);
-                    endDate.setFullYear(startDate.getFullYear() + 1);
-                    endDateInput.value = endDate.toISOString().split('T')[0];
-                });
+            function updateEndDate() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(startDate);
+                endDate.setFullYear(startDate.getFullYear() + 1);
+                endDateInput.value = endDate.toISOString().split('T')[0];
+            }
+
+            startDateInput.addEventListener('change', updateEndDate);
+
+            coverageSelect.addEventListener('change', function() {
+                const selectedOption = coverageSelect.options[coverageSelect.selectedIndex];
+                const premiumValue = selectedOption.getAttribute('data-premium');
+                premiumDisplay.textContent = premiumValue ? parseFloat(premiumValue).toFixed(0) : '0';
+            });
+
+            // Inicializace hodnoty pojistného
+            const selectedOptionInitial = coverageSelect.options[coverageSelect.selectedIndex];
+            const initialPremiumValue = selectedOptionInitial.getAttribute('data-premium');
+            premiumDisplay.textContent = initialPremiumValue ? parseFloat(initialPremiumValue).toFixed(0) : '0';
+
+            // Inicializace end_date při načtení stránky
+            if (!endDateInput.value) {
+                updateEndDate();
             }
         });
     </script>

@@ -11,7 +11,7 @@
             <strong class="coverage-name">{{ coverage.name }}</strong>
             <p class="coverage-description">{{ coverage.description }}</p>
             <div class="coverage-actions">
-                <a href="{% url 'add_policy' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojistku</a>
+                <a href="{% url 'add_policy' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
                 <a href="{% url 'edit_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-warning">Editovat</a>
                 <form method="post" action="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" style="display:inline;">
                     {% csrf_token %}
