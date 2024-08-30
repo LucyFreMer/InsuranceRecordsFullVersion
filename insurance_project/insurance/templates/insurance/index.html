@@ -3,7 +3,15 @@
 {% block title %}Seznam pojištěnců{% endblock %}
 
 {% block content %}
-    <div class="container">
+<div class="container">
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
         <h1>Pojistěnci</h1>
 
         <div class="new-insured-button-container">
@@ -25,10 +33,7 @@
                     <td>{{ person.street_address }}, {{ person.city }}, {{ person.postal_code }}</td>
                     <td>
                         <a href="{% url 'edit_insured' person.id %}" class="btn btn-warning">Editovat</a>
-                        <form action="{% url 'delete_insured' person.id %}" method="post" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-danger">Odstranit</button>
-                        </form>
+                        <a href="{% url 'delete_insured' person.id %}" class="btn btn-danger">Odstranit</a>
                     </td>
                 </tr>
                 {% endfor %}

@@ -5,6 +5,14 @@
 
 {% block content %}
 <div class="container">
+    {% if messages %}
+        <div class="alert alert-success">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="profile-header">
         <div class="profile-image">
             <img src="{% static 'images/profile_picture.png' %}" alt="{{ insured_person.first_name }} {{ insured_person.last_name }}">
@@ -41,22 +49,19 @@
                 </td>
             </tr>
             {% endfor %}
-            <!-- Celkové pojistné -->
+
             <tr>
                 <td class="text-right"><strong>Roční pojistné celkem:</strong></td>
                 <td><strong>{{ total_premium|floatformat:0 }} Kč</strong></td>
-                <td></td> <!-- Prázdná buňka, aby bylo vše správně zarovnáno -->
+                <td></td>
             </tr>
         </tbody>
     </table>
 
     <div class="btn-group-centered">
-        <a href="{% url 'add_policy' insured_person.id %}" class="btn btn-primary">Přidat pojištění</a>
+        <a href="{% url 'add_policy_from_insured' insured_person.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
         <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">Editovat pojištěnce</a>
-        <form method="post" action="{% url 'delete_insured' insured_person.id %}" style="display:inline;">
-            {% csrf_token %}
-            <button type="submit" class="btn btn-danger" onclick="return confirm('Opravdu chcete tohoto pojištěnce odstranit?');">Odstranit pojištěnce</button>
-        </form>
+        <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
     </div>
 </div>
 {% endblock %}

@@ -22,19 +22,35 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    {{ form.insured_person.label_tag }}
-                    {{ form.insured_person }}
+                    <label for="id_insured_person">Pojištěná osoba:</label>
+                    {% if not insured_person %}
+                        <select id="id_insured_person" name="insured_person" class="form-control">
+                            <option value="" selected disabled>Vyberte pojištěnou osobu</option>
+                            {% for person in form.fields.insured_person.queryset %}
+                            <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <p>{{ insured_person.first_name }} {{ insured_person.last_name }}</p>
+                        <input type="hidden" name="insured_person" value="{{ insured_person.id }}">
+                    {% endif %}
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="id_insurance_coverage">Pojistné krytí:</label>
-                    <select id="id_insurance_coverage" name="insurance_coverage" class="form-control">
-                        {% for coverage in form.fields.insurance_coverage.queryset %}
-                        <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}">{{ coverage }}</option>
-                        {% endfor %}
-                    </select>
+                    {% if insurance_coverage %}
+                        <p>{{ insurance_coverage.name }}</p>
+                        <input type="hidden" name="insurance_coverage" value="{{ insurance_coverage.id }}">
+                    {% else %}
+                        <select id="id_insurance_coverage" name="insurance_coverage" class="form-control">
+                            <option value="" selected disabled>Vyberte pojistné krytí</option>
+                            {% for coverage in form.fields.insurance_coverage.queryset %}
+                            <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}">{{ coverage }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                 </div>
             </div>
 
@@ -54,7 +70,9 @@
 
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <p id="premium-label">Roční pojistné: <span id="premium-display">0</span> Kč</p>
+                    <label for="id_premium">Roční pojistné:</label>
+                    <input type="text" class="form-control" id="id_premium" name="premium"
+                           value="{{ form.initial.premium|floatformat:0 }},- Kč" readonly>
                 </div>
             </div>
 
@@ -76,8 +94,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             const startDateInput = document.getElementById('id_start_date');
             const endDateInput = document.getElementById('id_end_date');
-            const premiumDisplay = document.getElementById('premium-display');
             const coverageSelect = document.getElementById('id_insurance_coverage');
+            const premiumDisplay = document.getElementById('id_premium');
 
             function updateEndDate() {
                 const startDate = new Date(startDateInput.value);
@@ -91,15 +109,11 @@
             coverageSelect.addEventListener('change', function() {
                 const selectedOption = coverageSelect.options[coverageSelect.selectedIndex];
                 const premiumValue = selectedOption.getAttribute('data-premium');
-                premiumDisplay.textContent = premiumValue ? parseFloat(premiumValue).toFixed(0) : '0';
+                premiumDisplay.value = premiumValue ? parseFloat(premiumValue).toFixed(0) + ',- Kč' : '0,- Kč';
             });
 
-            // Inicializace hodnoty pojistného
-            const selectedOptionInitial = coverageSelect.options[coverageSelect.selectedIndex];
-            const initialPremiumValue = selectedOptionInitial.getAttribute('data-premium');
-            premiumDisplay.textContent = initialPremiumValue ? parseFloat(initialPremiumValue).toFixed(0) : '0';
+            premiumDisplay.value = '{{ form.initial.premium|floatformat:0 }},- Kč';
 
-            // Inicializace end_date při načtení stránky
             if (!endDateInput.value) {
                 updateEndDate();
             }

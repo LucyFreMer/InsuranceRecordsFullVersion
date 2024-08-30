@@ -24,14 +24,19 @@ urlpatterns = [
     path('pojisteni/<int:insurance_id>/kryti/<int:coverage_id>/odstranit/', views.delete_coverage, name='delete_insurance_coverage'),
 
     path('pojisteni/<int:id>/', views.policy_detail, name='policy_detail'),  # Detail konkrétního pojištění (pojistky)
-    path('pojistenci/<int:insured_id>/zridit_pojistku/', views.add_policy, name='add_policy'),  # Přidání pojistky k pojištěnci
+
+
+    path('pojistenci/<int:insured_id>/zridit_pojistku/', views.add_policy_from_insured, name='add_policy_from_insured'),  # Cesta pro přidání pojištění z detailu pojištěnce
+    path('pojisteni/<int:coverage_id>/zridit/', views.add_policy_from_coverage, name='add_policy_from_coverage'),  # Cesta pro přidání pojištění z detailu pojistného krytí
+
+
     path('pojistky/<int:id>/editovat/', views.edit_policy, name='edit_policy'),  # Editace pojistky
     path('pojisteni/<int:id>/odstranit/', views.delete_policy, name='delete_policy'),  # Odstranění pojistky
 
-    path('jak-na-pojisteni/', views.how_to_insurance, name='how_to_insurance'),
-    path('o-aplikaci/', views.about, name='about'), # O aplikaci
+    path('jak-na-pojisteni/', views.how_to_insurance, name='how_to_insurance'),  # Jak na pojištění
+    path('o-aplikaci/', views.about, name='about'),  # O aplikaci
 
-    path('registrovat/', views.register, name='register'),  # Pro registraci
+    path('registrovat/', views.register, name='register'),  # Registraci
     path('prihlasit/', auth_views.LoginView.as_view(template_name='insurance/login.html'), name='login'),  # Přihlášení
     path('odhlasit/', csrf_exempt(auth_views.LogoutView.as_view(next_page='/')), name='logout'),  # Odhlášení
 ]

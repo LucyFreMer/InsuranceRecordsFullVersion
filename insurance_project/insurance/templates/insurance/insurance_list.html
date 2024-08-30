@@ -21,7 +21,7 @@
             </div>
             <div class="insurance-actions">
                 <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-warning">Editovat</a>
-                <a href="{% url 'delete_insurance' insurance.id %}" class="btn btn-danger" onclick="return confirm('Opravdu chcete tento typ pojištění odstranit?');">Odstranit</a>
+                <a href="{% url 'delete_insurance' insurance.id %}" class="btn btn-danger">Odstranit</a>
             </div>
         </div>
         {% endfor %}

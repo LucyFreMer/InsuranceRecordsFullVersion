@@ -121,7 +121,7 @@ header {
 
 .alert {
     position: fixed;
-    top: 80px;
+    top: 75px;
     left: 0;
     width: 100%;
     padding: 10px;
@@ -225,6 +225,18 @@ a:hover {
     justify-content: center; 
     margin-top: 20px;
     font-size: 18px;
+}
+
+.btn-group-centered .btn {
+    width: 195px;
+    height: 50px;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .btn-group-centered a {

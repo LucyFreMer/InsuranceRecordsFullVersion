@@ -3,6 +3,7 @@ from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
 from django.utils.timezone import now
 from datetime import timedelta
 
+
 class InsuredPersonForm(forms.ModelForm):
     class Meta:
         model = InsuredPerson
@@ -59,24 +60,46 @@ class InsuranceCoverageForm(forms.ModelForm):
         }
 
 
-class PolicyForm(forms.ModelForm):
+class PolicyFormFromInsured(forms.ModelForm):
     class Meta:
         model = Policy
-        fields = ['insured_person', 'insurance_coverage', 'start_date', 'end_date']
+        fields = ['insurance_coverage', 'start_date', 'end_date']
         labels = {
-            'insured_person': 'Pojištěná osoba',
             'insurance_coverage': 'Pojistné krytí',
             'start_date': 'Datum začátku pojištění',
             'end_date': 'Datum konce pojištění',
         }
         widgets = {
             'start_date': forms.DateInput(attrs={'type': 'date'}),
-            'end_date': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),  # Nastavení end_date jako readonly
+            'end_date': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),
         }
 
     def __init__(self, *args, **kwargs):
-        super(PolicyForm, self).__init__(*args, **kwargs)
-        # Nastavení defaultních hodnot při vytvoření nové pojistky
-        if not self.instance.id:
-            self.fields['start_date'].initial = now().date() + timedelta(days=1)
-            self.fields['end_date'].initial = now().date() + timedelta(days=366)
+        super(PolicyFormFromInsured, self).__init__(*args, **kwargs)
+
+
+class PolicyFormFromCoverage(forms.ModelForm):
+    class Meta:
+        model = Policy
+        fields = ['insured_person', 'start_date', 'end_date']
+        labels = {
+            'insured_person': 'Pojištěná osoba',
+            'start_date': 'Datum začátku pojištění',
+            'end_date': 'Datum konce pojištění',
+        }
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        # Získání pojistného krytí z argumentů
+        insurance_coverage = kwargs.pop('insurance_coverage', None)
+        super(PolicyFormFromCoverage, self).__init__(*args, **kwargs)
+
+        # Předání seznamu pojištěnců
+        self.fields['insured_person'].queryset = InsuredPerson.objects.all()
+
+        # Automatické nastavení prémia na základě pojistného krytí
+        if insurance_coverage:
+            self.initial['premium'] = insurance_coverage.premium
