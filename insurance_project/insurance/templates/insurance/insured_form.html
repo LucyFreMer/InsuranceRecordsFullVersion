@@ -31,25 +31,29 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
+                    {{ form.id_number.label_tag }}
+                    {{ form.id_number }}
+                </div>
+                <div class="form-group col-md-6">
                     {{ form.email.label_tag }}
                     {{ form.email }}
                 </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.phone_number.label_tag }}
                     {{ form.phone_number }}
                 </div>
-            </div>
-            <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.street_address.label_tag }}
                     {{ form.street_address }}
                 </div>
+            </div>
+            <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.city.label_tag }}
                     {{ form.city }}
                 </div>
-            </div>
-            <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.postal_code.label_tag }}
                     {{ form.postal_code }}
@@ -60,4 +64,18 @@
             </div>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const idNumberInput = document.getElementById('{{ form.id_number.id_for_label }}');
+
+            idNumberInput.addEventListener('input', function() {
+                let value = idNumberInput.value.replace(/\D/g, ''); // Remove non-digit characters
+                if (value.length > 6) {
+                    value = value.slice(0, 6) + '/' + value.slice(6);
+                }
+                idNumberInput.value = value;
+            });
+        });
+    </script>
 {% endblock %}

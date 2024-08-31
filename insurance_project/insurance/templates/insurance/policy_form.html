@@ -17,6 +17,7 @@
                 Výběr pojištění
             {% endif %}
         </h1>
+
         <form method="post" class="form-horizontal">
             {% csrf_token %}
 
@@ -24,14 +25,16 @@
                 <div class="form-group col-md-12">
                     <label for="id_insured_person">Pojištěná osoba:</label>
                     {% if not insured_person %}
-                        <select id="id_insured_person" name="insured_person" class="form-control">
+                        <select id="id_insured_person" name="insured_person" class="form-control custom-select-style">
                             <option value="" selected disabled>Vyberte pojištěnou osobu</option>
                             {% for person in form.fields.insured_person.queryset %}
-                            <option value="{{ person.id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                            <option value="{{ person.id }}" {% if form.initial.insured_person == person.id %}selected{% endif %}>
+                                {{ person.first_name }} {{ person.last_name }}
+                            </option>
                             {% endfor %}
                         </select>
                     {% else %}
-                        <p>{{ insured_person.first_name }} {{ insured_person.last_name }}</p>
+                        <input type="text" class="form-control" value="{{ insured_person.first_name }} {{ insured_person.last_name }}" readonly>
                         <input type="hidden" name="insured_person" value="{{ insured_person.id }}">
                     {% endif %}
                 </div>
@@ -41,13 +44,16 @@
                 <div class="form-group col-md-12">
                     <label for="id_insurance_coverage">Pojistné krytí:</label>
                     {% if insurance_coverage %}
-                        <p>{{ insurance_coverage.name }}</p>
+                        <input type="text" class="form-control" value="{{ insurance_coverage.name }}" readonly>
                         <input type="hidden" name="insurance_coverage" value="{{ insurance_coverage.id }}">
                     {% else %}
-                        <select id="id_insurance_coverage" name="insurance_coverage" class="form-control">
+                        <select id="id_insurance_coverage" name="insurance_coverage" class="form-control custom-select-style">
                             <option value="" selected disabled>Vyberte pojistné krytí</option>
                             {% for coverage in form.fields.insurance_coverage.queryset %}
-                            <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}">{{ coverage }}</option>
+                            <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}"
+                                    {% if form.initial.insurance_coverage == coverage.id %}selected{% endif %}>
+                                {{ coverage }}
+                            </option>
                             {% endfor %}
                         </select>
                     {% endif %}
@@ -72,7 +78,7 @@
                 <div class="form-group col-md-12">
                     <label for="id_premium">Roční pojistné:</label>
                     <input type="text" class="form-control" id="id_premium" name="premium"
-                           value="{{ form.initial.premium|floatformat:0 }},- Kč" readonly>
+                           value="{% if insurance_coverage %}{{ insurance_coverage.premium|floatformat:0 }},- Kč{% elif form.instance.premium %}{{ form.instance.premium|floatformat:0 }},- Kč{% endif %}" readonly>
                 </div>
             </div>
 
@@ -95,7 +101,15 @@
             const startDateInput = document.getElementById('id_start_date');
             const endDateInput = document.getElementById('id_end_date');
             const coverageSelect = document.getElementById('id_insurance_coverage');
-            const premiumDisplay = document.getElementById('id_premium');
+            const premiumInput = document.getElementById('id_premium');
+
+            if (!startDateInput.value) {
+                const today = new Date();
+                today.setDate(today.getDate() + 1);
+                const minDate = today.toISOString().split('T')[0];
+                startDateInput.setAttribute('min', minDate);
+                startDateInput.value = minDate;
+            }
 
             function updateEndDate() {
                 const startDate = new Date(startDateInput.value);
@@ -104,15 +118,27 @@
                 endDateInput.value = endDate.toISOString().split('T')[0];
             }
 
+            if (startDateInput.value) {
+                updateEndDate();
+            }
+
             startDateInput.addEventListener('change', updateEndDate);
 
             coverageSelect.addEventListener('change', function() {
                 const selectedOption = coverageSelect.options[coverageSelect.selectedIndex];
                 const premiumValue = selectedOption.getAttribute('data-premium');
-                premiumDisplay.value = premiumValue ? parseFloat(premiumValue).toFixed(0) + ',- Kč' : '0,- Kč';
+                if (premiumValue) {
+                    premiumInput.value = parseFloat(premiumValue).toFixed(0) + ',- Kč';
+                } else {
+                    premiumInput.value = '';
+                }
             });
 
-            premiumDisplay.value = '{{ form.initial.premium|floatformat:0 }},- Kč';
+            const selectedOption = coverageSelect.querySelector('option:checked');
+            const initialPremiumValue = selectedOption ? selectedOption.getAttribute('data-premium') : null;
+            if (initialPremiumValue) {
+                premiumInput.value = parseFloat(initialPremiumValue).toFixed(0) + ',- Kč';
+            }
 
             if (!endDateInput.value) {
                 updateEndDate();

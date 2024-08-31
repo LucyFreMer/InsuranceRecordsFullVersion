@@ -55,7 +55,11 @@ def edit_insured(request, id):
             return redirect('insured_detail', id=id)
     else:
         form = InsuredPersonForm(instance=insured_person)
-    return render(request, 'insurance/insured_form.html', {'form': form})
+
+    return render(request, 'insurance/insured_form.html', {
+        'form': form,
+        'insured_person': insured_person  # Předáváme pojištěnce do šablony pro případné další zobrazení informací
+    })
 
 
 # Odstranění pojištěnce
@@ -184,14 +188,17 @@ def add_policy_from_coverage(request, coverage_id):
         if form.is_valid():
             policy = form.save(commit=False)
             policy.insurance_coverage = insurance_coverage
-            policy.premium = insurance_coverage.premium  # Automaticky nastavena již ve formuláři
+            policy.premium = insurance_coverage.premium
             policy.save()
             messages.success(request, 'Pojištění bylo úspěšně zřízeno.')
             return redirect('insured_detail', id=policy.insured_person.id)
     else:
         form = PolicyFormFromCoverage(insurance_coverage=insurance_coverage)
 
-    return render(request, 'insurance/policy_form.html', {'form': form, 'insurance_coverage': insurance_coverage})
+    return render(request, 'insurance/policy_form.html', {
+        'form': form,
+        'insurance_coverage': insurance_coverage
+    })
 
 
 # Editace pojistky
@@ -211,19 +218,34 @@ def edit_policy(request, id):
             messages.success(request, 'Pojištění bylo úspěšně aktualizováno.')
             return redirect('insured_detail', id=policy.insured_person.id)
     else:
+        # Vytvoření instance formuláře s předvyplněnými údaji
         form = form_class(instance=policy)
 
-    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': policy.insured_person})
+    # Pokud formulář používá pojistné krytí, automaticky předvyplníme roční pojistné
+    if isinstance(form, PolicyFormFromCoverage):
+        initial_premium = policy.insurance_coverage.premium if policy.insurance_coverage else None
+    else:
+        initial_premium = None
+
+    return render(request, 'insurance/policy_form.html', {
+        'form': form,
+        'insured_person': policy.insured_person,
+        'initial_premium': initial_premium  # Předání počáteční hodnoty ročního pojistného
+    })
 
 
 def insurance_coverage_list(request, id):
     insurance_type = get_object_or_404(InsuranceType, id=id)
-    coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type)
-    insured_person = ...
+    coverage_id = request.GET.get('coverage_id')
+
+    if coverage_id:
+        coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type, id=coverage_id)
+    else:
+        coverages = InsuranceCoverage.objects.filter(insurance_type=insurance_type)
+
     return render(request, 'insurance/insurance_coverage_list.html', {
         'insurance_type': insurance_type,
         'coverages': coverages,
-        'insured_person': insured_person
     })
 
 

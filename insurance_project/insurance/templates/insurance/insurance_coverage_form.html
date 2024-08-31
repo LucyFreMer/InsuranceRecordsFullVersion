@@ -18,7 +18,6 @@
             {% endif %}
         </h1>
 
-        <!-- Přidání tohoto zobrazí všechny chyby formuláře na začátku formuláře -->
         {% if form.errors %}
             <div class="alert alert-danger">
                 <strong>Došlo k chybě:</strong>
@@ -42,7 +41,6 @@
                 <div class="form-group col-md-12">
                     {{ form.name.label_tag }}
                     {{ form.name }}
-                    <!-- Přidání chyb pro pole "name" -->
                     {% if form.name.errors %}
                         <div class="text-danger">{{ form.name.errors }}</div>
                     {% endif %}
@@ -53,7 +51,6 @@
                 <div class="form-group col-md-12">
                     {{ form.description.label_tag }}
                     {{ form.description }}
-                    <!-- Přidání chyb pro pole "description" -->
                     {% if form.description.errors %}
                         <div class="text-danger">{{ form.description.errors }}</div>
                     {% endif %}
@@ -64,7 +61,6 @@
                 <div class="form-group col-md-6">
                     {{ form.premium.label_tag }}
                     {{ form.premium }}
-                    <!-- Přidání chyb pro pole "premium" -->
                     {% if form.premium.errors %}
                         <div class="text-danger">{{ form.premium.errors }}</div>
                     {% endif %}

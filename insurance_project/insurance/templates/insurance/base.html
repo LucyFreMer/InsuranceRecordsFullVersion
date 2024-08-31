@@ -54,14 +54,14 @@
 
     <script>
     setTimeout(function() {
-        const alert = document.querySelector('.alert');
-        if (alert) {
-            alert.style.opacity = '0'; // Spustí plynulé mizení
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(function(alert) {
+            alert.style.opacity = '0';
             setTimeout(function() {
-                alert.style.display = 'none'; // Úplně skryje element po dokončení přechodu
-            }, 1000); // Tento čas musí být stejný jako doba přechodu v CSS (1s)
-        }
-    }, 5000); // Hláška začne mizet po 5 sekundách
+                alert.style.display = 'none';
+            }, 1000);
+        });
+    }, 5000); // Hlášky začnou mizet po 5 sekundách
     </script>
 </body>
 </html>

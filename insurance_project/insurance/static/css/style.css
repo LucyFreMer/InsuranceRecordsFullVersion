@@ -549,7 +549,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     align-items: flex-start;
     justify-content: center;
     margin-left: 200px;
-    margin-top: 12px;
+    margin-top: 38px;
 }
 
 .right-info p {
@@ -936,4 +936,23 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     width: 100%;
     height: 3px;
     background-color: #1c65b3;
+}
+
+.custom-select-style {
+    height: 42px; 
+    width: 105%;
+    min-width: 227px;
+    max-width: 628px;
+    border-radius: 6px;
+    padding-top: 10px; 
+    padding-bottom: 10px;
+    padding-left: 9px;
+    border: 1px solid #ccc;
+}
+
+.description-content {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 1em;
+    color: #333;
 }

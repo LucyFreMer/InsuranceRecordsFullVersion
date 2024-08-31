@@ -23,6 +23,7 @@
                 <p>{{ insured_person.street_address }}<br>{{ insured_person.city }}<br>{{ insured_person.postal_code }}</p>
             </div>
             <div class="right-info">
+                <p>{{ insured_person.id_number }}</p>
                 <p>{{ insured_person.email }}</p>
                 <p>{{ insured_person.phone_number }}</p>
             </div>
@@ -41,7 +42,7 @@
         <tbody>
             {% for policy in policies %}
             <tr>
-                <td><a href="{% url 'policy_detail' policy.id %}">{{ policy.insurance_coverage.name }}</a></td>
+                <td><a href="{% url 'insurance_coverage_list' policy.insurance_coverage.insurance_type.id %}?coverage_id={{ policy.insurance_coverage.id }}">{{ policy.insurance_coverage.name }}</a></td>
                 <td>{{ policy.premium|floatformat:0 }} Kč</td>
                 <td>
                     <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
