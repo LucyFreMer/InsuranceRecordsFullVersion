@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
-from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured, PolicyFormFromCoverage, CustomUserCreationForm
+from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured, PolicyFormFromCoverage, CustomUserCreationForm, UserPolicyForm
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.exceptions import PermissionDenied
@@ -208,7 +208,7 @@ def add_policy_from_insured(request, insured_id):
 @login_required
 def add_policy_from_coverage(request, coverage_id):
     insurance_coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
-    insured_person = get_object_or_404(InsuredPerson, user=request.user)
+    insured_person = InsuredPerson.objects.filter(user=request.user).first()
 
     if request.method == 'POST':
         form = PolicyFormFromCoverage(request.POST, insurance_coverage=insurance_coverage)
@@ -225,6 +225,31 @@ def add_policy_from_coverage(request, coverage_id):
     return render(request, 'insurance/policy_form.html', {
         'form': form,
         'insurance_coverage': insurance_coverage
+    })
+
+
+@login_required
+def create_policy_for_user(request, coverage_id):
+    insurance_coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
+    insured_person = InsuredPerson.objects.get(user=request.user)
+
+    if request.method == 'POST':
+        form = UserPolicyForm(request.POST, insurance_coverage=insurance_coverage)
+        if form.is_valid():
+            policy = form.save(commit=False)
+            policy.insured_person = insured_person  # Přiřazení aktuálního uživatele jako pojištěné osoby
+            policy.insurance_coverage = insurance_coverage
+            policy.premium = insurance_coverage.premium
+            policy.save()
+            messages.success(request, 'Pojištění bylo úspěšně zřízeno.')
+            return redirect('insured_detail', id=insured_person.id)
+    else:
+        form = UserPolicyForm(insurance_coverage=insurance_coverage)
+
+    return render(request, 'insurance/policy_form.html', {
+        'form': form,
+        'insured_person': insured_person,
+        'insurance_coverage': insurance_coverage,
     })
 
 

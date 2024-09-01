@@ -1,10 +1,22 @@
 {% extends 'insurance/base.html' %}
 
-{% block title %}Seznam pojištěnců{% endblock %}
+{% block title %}
+    {% if user.is_staff %}
+        Seznam pojištěnců
+    {% else %}
+        Pojištěnec - {{ user.first_name }} {{ user.last_name }}
+    {% endif %}
+{% endblock %}
 
 {% block content %}
 <div class="container">
-        <h1>Pojistěnci</h1>
+        <h1>
+            {% if user.is_staff %}
+                Pojistěnci
+            {% else %}
+                Moje pojištění - {{ user.first_name }} {{ user.last_name }}
+            {% endif %}
+        </h1>
 
         {% if messages %}
         <div class="messages">

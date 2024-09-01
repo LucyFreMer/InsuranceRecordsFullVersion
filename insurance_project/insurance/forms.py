@@ -115,6 +115,28 @@ class PolicyFormFromCoverage(forms.ModelForm):
             self.initial['premium'] = insurance_coverage.premium
 
 
+class UserPolicyForm(forms.ModelForm):
+    class Meta:
+        model = Policy
+        fields = ['start_date', 'end_date']  # insured_person bude automaticky nastaveno
+        labels = {
+            'start_date': 'Datum začátku pojištění',
+            'end_date': 'Datum konce pojištění',
+        }
+        widgets = {
+            'start_date': forms.DateInput(attrs={'type': 'date'}),
+            'end_date': forms.DateInput(attrs={'type': 'date', 'readonly': 'readonly'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        insurance_coverage = kwargs.pop('insurance_coverage', None)
+        super(UserPolicyForm, self).__init__(*args, **kwargs)
+
+        # Automatické nastavení prémia na základě pojistného krytí
+        if insurance_coverage:
+            self.initial['premium'] = insurance_coverage.premium
+
+
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         required=True,

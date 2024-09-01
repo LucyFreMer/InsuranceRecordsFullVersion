@@ -1,6 +1,6 @@
 from django.urls import path
 from django.shortcuts import redirect
-from .views import CustomLoginView, CustomLogoutView, assign_default_user_to_insured_persons
+from .views import CustomLoginView, CustomLogoutView, assign_default_user_to_insured_persons, create_policy_for_user
 from . import views
 from django.contrib.auth import views as auth_views
 
@@ -29,6 +29,7 @@ urlpatterns = [
     path('pojistenci/<int:insured_id>/zridit_pojistku/', views.add_policy_from_insured, name='add_policy_from_insured'),  # Cesta pro přidání pojištění z detailu pojištěnce
     path('pojisteni/<int:coverage_id>/zridit/', views.add_policy_from_coverage, name='add_policy_from_coverage'),  # Cesta pro přidání pojištění z detailu pojistného krytí
 
+    path('pojisteni/<int:coverage_id>/zridit-uzivatelem/', create_policy_for_user, name='create_policy_for_user'),
 
     path('pojistky/<int:id>/editovat/', views.edit_policy, name='edit_policy'),  # Editace pojistky
     path('pojisteni/<int:id>/odstranit/', views.delete_policy, name='delete_policy'),  # Odstranění pojistky
