@@ -78,12 +78,15 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger',
 }
 
+MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
+
 WSGI_APPLICATION = 'insurance_project.wsgi.application'
 
 
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/pojisteni/seznam/'
+LOGOUT_REDIRECT_URL = '/prihlasit/'
 
+LOGIN_URL = '/pojisteni/prihlasit/'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

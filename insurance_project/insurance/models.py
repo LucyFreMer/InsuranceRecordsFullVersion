@@ -1,10 +1,12 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
 class InsuredPerson(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     first_name = models.CharField("Jméno", max_length=100)
     last_name = models.CharField("Příjmení", max_length=100)
-    id_number = models.CharField("Rodné číslo", max_length=11, unique=True, null=True, blank=True)
+    id_number = models.CharField("Rodné číslo", max_length=11, unique=True)
     email = models.EmailField("Email")
     phone_number = models.CharField("Telefonní číslo", max_length=16)
     street_address = models.CharField("Ulice a číslo popisné", max_length=255)

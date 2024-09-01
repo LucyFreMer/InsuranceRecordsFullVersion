@@ -45,8 +45,10 @@
                 <td><a href="{% url 'insurance_coverage_list' policy.insurance_coverage.insurance_type.id %}?coverage_id={{ policy.insurance_coverage.id }}">{{ policy.insurance_coverage.name }}</a></td>
                 <td>{{ policy.premium|floatformat:0 }} Kč</td>
                 <td>
-                    <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
-                    <a href="{% url 'delete_policy' policy.id %}" class="btn btn-danger btn-sm">Odstranit</a>
+                    {% if user.is_staff %}
+                        <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
+                        <a href="{% url 'delete_policy' policy.id %}" class="btn btn-danger btn-sm">Odstranit</a>
+                    {% endif %}
                 </td>
             </tr>
             {% endfor %}
@@ -62,7 +64,9 @@
     <div class="btn-group-centered">
         <a href="{% url 'add_policy_from_insured' insured_person.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
         <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">Editovat pojištěnce</a>
-        <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
+        {% if user.is_staff %}
+            <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

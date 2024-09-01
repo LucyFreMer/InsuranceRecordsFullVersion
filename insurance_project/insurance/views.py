@@ -1,15 +1,33 @@
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.contrib import messages
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
-from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured, PolicyFormFromCoverage
+from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured, PolicyFormFromCoverage, CustomUserCreationForm
 from django.core.paginator import Paginator
+from django.contrib.auth.decorators import user_passes_test, login_required
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+
+def assign_default_user_to_insured_persons(request):
+    default_user = User.objects.get(username='default_username')
+    InsuredPerson.objects.update(user=default_user)
+    return HttpResponse("Assigned default user to all insured persons.")
 
 
 # Hlavní stránka (index) - zobrazuje seznam pojištěnců
+@login_required
 def index(request):
-    insured_people_list = InsuredPerson.objects.all()
+    if request.user.is_staff:
+        insured_people_list = InsuredPerson.objects.all()
+        print("Admin vidí všechny pojištěnce:", insured_people_list)
+    else:
+        insured_people_list = InsuredPerson.objects.filter(user=request.user)
+        print(f"Uživatel {request.user.username} vidí své pojištěnce:", insured_people_list)
+
     paginator = Paginator(insured_people_list, 10)  # počet pojištěnců na stránku
 
     page_number = request.GET.get('page')
@@ -19,8 +37,13 @@ def index(request):
 
 
 # Detail pojištěnce
+@login_required
 def insured_detail(request, id):
-    insured_person = get_object_or_404(InsuredPerson, id=id)
+    if request.user.is_staff:
+        insured_person = get_object_or_404(InsuredPerson, id=id)
+    else:
+        insured_person = get_object_or_404(InsuredPerson, id=id, user=request.user)
+
     policies = Policy.objects.filter(insured_person=insured_person)
     total_premium = sum(policy.premium for policy in policies)
 
@@ -39,6 +62,8 @@ def add_insured(request):
             form.save()
             messages.success(request, 'Pojištěnec byl úspěšně uložen.')
             return redirect('index')
+        else:
+            messages.error(request, 'Došlo k chybě ve formuláři. Zkontrolujte prosím zadané údaje.')
     else:
         form = InsuredPersonForm()
     return render(request, 'insurance/insured_form.html', {'form': form})
@@ -180,8 +205,10 @@ def add_policy_from_insured(request, insured_id):
     return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': insured_person})
 
 
+@login_required
 def add_policy_from_coverage(request, coverage_id):
     insurance_coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
+    insured_person = get_object_or_404(InsuredPerson, user=request.user)
 
     if request.method == 'POST':
         form = PolicyFormFromCoverage(request.POST, insurance_coverage=insurance_coverage)
@@ -275,19 +302,45 @@ def about(request):
 # Registrace
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
+            messages.success(request, 'Registrace proběhla úspěšně, jste přihlášen(a).')
             login(request, user)
             return redirect('index')
     else:
-        form = UserCreationForm()
+        form = CustomUserCreationForm()
     return render(request, 'insurance/register.html', {'form': form})
 
 
-def login_view(request):
-    return render(request, 'insurance/login.html')
+# Přihlášení
+class CustomLoginView(LoginView):
+    def form_valid(self, form):
+        messages.success(self.request, f"Jste přihlášen(a) {form.get_user().username}.")
+        return super().form_valid(form)
+
+
+# Odhlášení
+class CustomLogoutView(LogoutView):
+    def dispatch(self, request, *args, **kwargs):
+        messages.success(request, "Byl(a) jste úspěšně odhlášen(a).")
+        return super().dispatch(request, *args, **kwargs)
 
 
 def home(request):
     return render(request, 'home.html', {'message': 'Vítejte na naší stránce!'})
+
+
+# Kontrola, zda je uživatel administrátor
+def is_staff(user):
+    return user.is_staff
+
+
+@user_passes_test(is_staff)
+def delete_insured(request, id):
+    insured_person = get_object_or_404(InsuredPerson, id=id)
+    if request.method == 'POST':
+        insured_person.delete()
+        messages.success(request, 'Pojištěnec byl úspěšně odebrán.')
+        return redirect('insured_list')
+    return render(request, 'insurance/confirm_delete.html', {'object': insured_person})

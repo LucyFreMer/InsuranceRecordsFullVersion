@@ -1,8 +1,8 @@
 from django.urls import path
 from django.shortcuts import redirect
-from django.contrib.auth import views as auth_views
-from django.views.decorators.csrf import csrf_exempt
+from .views import CustomLoginView, CustomLogoutView, assign_default_user_to_insured_persons
 from . import views
+from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
@@ -37,6 +37,13 @@ urlpatterns = [
     path('o-aplikaci/', views.about, name='about'),  # O aplikaci
 
     path('registrovat/', views.register, name='register'),  # Registraci
-    path('prihlasit/', auth_views.LoginView.as_view(template_name='insurance/login.html'), name='login'),  # Přihlášení
-    path('odhlasit/', csrf_exempt(auth_views.LogoutView.as_view(next_page='/')), name='logout'),  # Odhlášení
+
+    path('prihlasit/', CustomLoginView.as_view(template_name='insurance/login.html'), name='login'),
+
+    path('odhlasit/', CustomLogoutView.as_view(next_page='login'), name='logout'),
+
+    path('assign-default-user/', assign_default_user_to_insured_persons),
 ]
+
+for pattern in urlpatterns:
+    print(pattern)

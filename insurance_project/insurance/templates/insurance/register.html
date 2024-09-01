@@ -3,32 +3,107 @@
 {% block title %}Registrace{% endblock %}
 
 {% block content %}
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
     <div class="container login-page">
         <h1>Registrace nového uživatele</h1>
         <form method="post" class="form-horizontal">
             {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
                     {{ form.username.label_tag }}
                     {{ form.username }}
                 </div>
+                <div class="form-group col-md-6">
+                    {{ form.street_address.label_tag }}
+                    {{ form.street_address }}
+                </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.city.label_tag }}
+                    {{ form.city }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group col-md-6">
+                    {{ form.postal_code.label_tag }}
+                    {{ form.postal_code }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.id_number.label_tag }}
+                    {{ form.id_number }}
+                </div>
+                <div class="form-group col-md-6">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+                <div class="form-group col-md-6">
                     {{ form.password1.label_tag }}
                     {{ form.password1 }}
                 </div>
             </div>
+
             <div class="form-row">
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-6">
+                    {{ form.phone_number.label_tag }}
+                    {{ form.phone_number }}
+                </div>
+                <div class="form-group col-md-6">
                     {{ form.password2.label_tag }}
                     {{ form.password2 }}
                 </div>
             </div>
+
             <div class="form-row">
                 <button type="submit" class="btn btn-primary btn-save">Registrovat se</button>
             </div>
         </form>
-        <p>Máte již účet? <a href="{% url 'login' %}">Přihlásit se</a></p>
+        <p>Máte již účet? <a href="{% url 'login' %}">Přihlášte se</a></p>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const idNumberInput = document.getElementById('id_id_number');
+
+            idNumberInput.addEventListener('input', function() {
+                let value = idNumberInput.value.replace(/\D/g, ''); // Odstranit všechny nečíselné znaky
+                if (value.length > 6) {
+                    value = value.slice(0, 6) + '/' + value.slice(6, 10); // Přidat lomítko po 6 číslicích
+                }
+                idNumberInput.value = value;
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
 from django.utils.timezone import now
 from datetime import timedelta
@@ -111,3 +113,87 @@ class PolicyFormFromCoverage(forms.ModelForm):
         # Automatické nastavení prémia na základě pojistného krytí
         if insurance_coverage:
             self.initial['premium'] = insurance_coverage.premium
+
+
+class CustomUserCreationForm(UserCreationForm):
+    username = forms.CharField(
+        required=True,
+        label="Uživatelské jméno",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte uživatelské jméno'})
+    )
+    first_name = forms.CharField(
+        required=True,
+        label="Jméno",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte křestní jméno'})
+    )
+    last_name = forms.CharField(
+        required=True,
+        label="Příjmení",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte příjmení'})
+    )
+    id_number = forms.CharField(
+        required=True,
+        label="Rodné číslo",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte rodné číslo', 'maxlength': '11'})
+    )
+    email = forms.EmailField(
+        required=True,
+        label="Email",
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte email'})
+    )
+    phone_number = forms.CharField(
+        max_length=16,
+        required=True,
+        label="Telefonní číslo",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte telefonní číslo'})
+    )
+    street_address = forms.CharField(
+        required=True,
+        label="Ulice a číslo popisné",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte ulici a číslo popisné'})
+    )
+    city = forms.CharField(
+        required=True,
+        label="Město",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte město'})
+    )
+    postal_code = forms.CharField(
+        required=True,
+        label="PSČ",
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte PSČ'})
+    )
+    password1 = forms.CharField(
+        required=True,
+        label="Heslo",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte heslo'})
+    )
+    password2 = forms.CharField(
+        required=True,
+        label="Potvrzení hesla",
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Potvrďte heslo'})
+    )
+
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'id_number', 'email', 'phone_number', 'street_address', 'city', 'postal_code')
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.first_name = self.cleaned_data['first_name']
+        user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
+        if commit:
+            user.save()
+
+            # Vytvoření a uložení pojištěnce
+            InsuredPerson.objects.create(
+                first_name=self.cleaned_data['first_name'],
+                last_name=self.cleaned_data['last_name'],
+                id_number=self.cleaned_data['id_number'],
+                email=self.cleaned_data['email'],
+                phone_number=self.cleaned_data['phone_number'],
+                street_address=self.cleaned_data['street_address'],
+                city=self.cleaned_data['city'],
+                postal_code=self.cleaned_data['postal_code'],
+            )
+        return user

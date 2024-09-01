@@ -19,17 +19,21 @@
             <div class="insurance-description">
                 {{ insurance.description }}
             </div>
+            {% if user.is_staff %}
             <div class="insurance-actions">
                 <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-warning">Editovat</a>
                 <a href="{% url 'delete_insurance' insurance.id %}" class="btn btn-danger">Odstranit</a>
             </div>
+            {% endif %}
         </div>
         {% endfor %}
     </div>
 
+    {% if user.is_staff %}
     <div class="btn-container-center">
         <a href="{% url 'add_insurance' %}" class="btn btn-primary btn-add-insurance">Přidat nové pojištění</a>
     </div>
+    {% endif %}
 </div>
 
 <script>

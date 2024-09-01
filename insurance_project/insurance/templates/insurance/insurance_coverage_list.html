@@ -12,17 +12,21 @@
             <p class="coverage-description">{{ coverage.description }}</p>
             <div class="coverage-actions">
                 <a href="{% url 'add_policy_from_coverage' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
+                {% if user.is_staff %}
                 <a href="{% url 'edit_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-warning">Editovat</a>
                 <form method="post" action="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" style="display:inline;">
                     {% csrf_token %}
                     <a href="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-danger">Odstranit</a>
                 </form>
+                {% endif %}
             </div>
         </div>
         {% endfor %}
     </div>
+    {% if user.is_staff %}
     <div class="btn-container-center">
         <a href="{% url 'add_insurance_coverage' insurance_type.id %}" class="btn btn-primary btn-add-insurance">Přidat nové pojistné krytí</a>
     </div>
+    {% endif %}
 </div>
 {% endblock %}
