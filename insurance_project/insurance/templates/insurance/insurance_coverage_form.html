@@ -50,7 +50,7 @@
             <div class="form-row">
                 <div class="form-group col-md-12">
                     {{ form.description.label_tag }}
-                    {{ form.description }}
+                    {{ form.description|safe }}
                     {% if form.description.errors %}
                         <div class="text-danger">{{ form.description.errors }}</div>
                     {% endif %}

@@ -15,6 +15,22 @@ header {
     font-size: 24px;
     color: white;
     text-decoration: none;
+    display: flex;
+    align-items: center;
+    position: relative;
+    top: -4px;
+}
+
+.logo-image {
+    height: 30px; 
+    width: 30px;  
+    margin-right: 5px; 
+    transform: translateY(5px);
+}
+
+.logo-text {
+    font-size: 24px; 
+    align-items: center;
 }
 
 .navbar {
@@ -341,12 +357,36 @@ th:nth-child(3), td:nth-child(3) {
     width: 25%; 
 }
 
+.insured-detail-table td, .insured-detail-table th {
+    vertical-align: middle;
+}
+
+.admin .insured-detail-table th:nth-child(1), 
+.admin .insured-detail-table td:nth-child(1) {
+    width: 40%; 
+}
+
+.admin .insured-detail-table th:nth-child(2), 
+.admin .insured-detail-table td:nth-child(2) {
+    width: 15%; 
+}
+
+.admin .insured-detail-table th:nth-child(3), 
+.admin .insured-detail-table td:nth-child(3) {
+    width: 25%; 
+}
+
+.admin .insured-detail-table th:nth-child(4), 
+.admin .insured-detail-table td:nth-child(4) {
+    width: 20%; 
+}
+
 
 table.insured-detail-table tr:last-child {
-    background-color: #265483; /* Nastavení světlého pozadí pro zvýraznění řádku */
-    font-weight: bold; /* Nastavení tučného písma pro celý řádek */
-    color: #000; /* Nastavení barvy textu */
-    border-top: 2px solid #dee2e6; /* Přidání horního ohraničení pro oddělení */
+    background-color: #265483; 
+    font-weight: bold; 
+    color: #000; 
+    border-top: 2px solid #dee2e6; 
 }
 
 table.insured-detail-table tr:last-child td:nth-child(1) {
@@ -359,12 +399,16 @@ table.insured-detail-table tr:last-child td:nth-child(1) {
 }
 
 table.insured-detail-table tr:last-child td:nth-child(2) {
-    color: #d7efff; /* Nastavení barvy textu, například zelená */
-    font-weight: bold; /* Nastavení tloušťky písma, bold pro tučné */
-    font-size: 18px; /* Nastavení velikosti písma */
+    color: #d7efff; 
+    font-weight: bold; 
+    font-size: 18px; 
     text-decoration: underline;
     text-decoration-thickness: 3px;
     text-decoration-color: #4085b3;
+}
+
+.text-center {
+    text-align: center;
 }
 
 .pagination {
@@ -854,6 +898,21 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     font-size: 16px;
     color: #555;
     margin-bottom: 0px;
+}
+
+.description-title {
+    font-size: 17px;
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    display: block; 
+}
+
+.description-item {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 15px; 
+    line-height: 1.8; 
 }
 
 .btn-save-coverage {

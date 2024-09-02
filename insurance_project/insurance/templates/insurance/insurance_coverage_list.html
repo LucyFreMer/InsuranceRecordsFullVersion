@@ -9,7 +9,7 @@
         {% for coverage in coverages %}
         <div class="coverage-item">
             <strong class="coverage-name">{{ coverage.name }}</strong>
-            <p class="coverage-description">{{ coverage.description }}</p>
+            <p class="coverage-description">{{ coverage.description|safe }}</p>
             <div class="coverage-actions">
                 {% if user.is_staff %}
                     <a href="{% url 'add_policy_from_coverage' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>

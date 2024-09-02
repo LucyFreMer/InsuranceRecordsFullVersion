@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
 from django.utils.timezone import now
-from datetime import timedelta
+from django.utils import timezone
 
 
 class InsuredPersonForm(forms.ModelForm):
@@ -86,6 +86,12 @@ class PolicyFormFromInsured(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(PolicyFormFromInsured, self).__init__(*args, **kwargs)
+        if self.instance and self.instance.pk:
+            # Při editaci zachováme původní datum
+            self.fields['start_date'].initial = self.instance.start_date
+        else:
+            # Při prvním vytvoření nastavíme výchozí datum na zítřejší den
+            self.fields['start_date'].initial = (timezone.now() + timezone.timedelta(days=1)).date()
 
 
 class PolicyFormFromCoverage(forms.ModelForm):

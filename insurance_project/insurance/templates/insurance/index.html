@@ -45,7 +45,7 @@
                 <tr>
                     <td><a href="{% url 'insured_detail' person.id %}">{{ person.first_name }} {{ person.last_name }}</a></td>
                     <td>{{ person.street_address }}, {{ person.city }}, {{ person.postal_code }}</td>
-                    <td>
+                    <td class="text-center">
                         <a href="{% url 'edit_insured' person.id %}" class="btn btn-warning">Editovat</a>
                         {% if user.is_staff %}
                             <a href="{% url 'delete_insured' person.id %}" class="btn btn-danger">Odstranit</a>
@@ -56,6 +56,7 @@
             </tbody>
         </table>
 
+        {% if user.is_staff %}
         <div class="pagination">
             <span class="step-links">
                 {% if insured_people.has_previous %}
@@ -77,7 +78,8 @@
                 {% else %}
                     <a href="#" class="btn btn-light disabled">Další</a>
                 {% endif %}
-            </span>
-        </div>
+                </span>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}

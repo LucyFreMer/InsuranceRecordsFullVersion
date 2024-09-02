@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import user_passes_test, login_required
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.http import HttpResponse
+from django.utils import timezone
 
 
 def assign_default_user_to_insured_persons(request):
@@ -22,10 +23,10 @@ def assign_default_user_to_insured_persons(request):
 @login_required
 def index(request):
     if request.user.is_staff:
-        insured_people_list = InsuredPerson.objects.all()
+        insured_people_list = InsuredPerson.objects.all().order_by('last_name', 'first_name')
         print("Admin vidí všechny pojištěnce:", insured_people_list)
     else:
-        insured_people_list = InsuredPerson.objects.filter(user=request.user)
+        insured_people_list = InsuredPerson.objects.filter(user=request.user).order_by('last_name', 'first_name')
         print(f"Uživatel {request.user.username} vidí své pojištěnce:", insured_people_list)
 
     paginator = Paginator(insured_people_list, 10)  # počet pojištěnců na stránku
@@ -254,36 +255,23 @@ def create_policy_for_user(request, coverage_id):
 
 
 # Editace pojistky
-def edit_policy(request, id):
-    policy = get_object_or_404(Policy, id=id)
-
-    # Rozhodnutí, který formulář použít
-    if policy.insured_person:
-        form_class = PolicyFormFromInsured
+def edit_policy(request, id=None):
+    if id:
+        policy = get_object_or_404(Policy, id=id)
     else:
-        form_class = PolicyFormFromCoverage
+        policy = Policy()
 
     if request.method == 'POST':
-        form = form_class(request.POST, instance=policy)
+        form = PolicyFormFromInsured(request.POST, instance=policy)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Pojištění bylo úspěšně aktualizováno.')
             return redirect('insured_detail', id=policy.insured_person.id)
     else:
-        # Vytvoření instance formuláře s předvyplněnými údaji
-        form = form_class(instance=policy)
+        form = PolicyFormFromInsured(instance=policy)
+        if not id:
+            form.fields['start_date'].initial = (timezone.now() + timezone.timedelta(days=1)).date()
 
-    # Pokud formulář používá pojistné krytí, automaticky předvyplníme roční pojistné
-    if isinstance(form, PolicyFormFromCoverage):
-        initial_premium = policy.insurance_coverage.premium if policy.insurance_coverage else None
-    else:
-        initial_premium = None
-
-    return render(request, 'insurance/policy_form.html', {
-        'form': form,
-        'insured_person': policy.insured_person,
-        'initial_premium': initial_premium  # Předání počáteční hodnoty ročního pojistného
-    })
+    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': policy.insured_person})
 
 
 def insurance_coverage_list(request, id):

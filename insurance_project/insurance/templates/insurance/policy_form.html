@@ -28,7 +28,7 @@
                         <select id="id_insured_person" name="insured_person" class="form-control custom-select-style">
                             <option value="" selected disabled>Vyberte pojištěnou osobu</option>
                             {% for person in form.fields.insured_person.queryset %}
-                            <option value="{{ person.id }}" {% if form.initial.insured_person == person.id %}selected{% endif %}>
+                            <option value="{{ person.id }}" {% if form.initial.insured_person == person.id %}selected {% endif %}>
                                 {{ person.first_name }} {{ person.last_name }}
                             </option>
                             {% endfor %}
@@ -51,7 +51,7 @@
                             <option value="" selected disabled>Vyberte pojistné krytí</option>
                             {% for coverage in form.fields.insurance_coverage.queryset %}
                             <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}"
-                                    {% if form.initial.insurance_coverage == coverage.id %}selected{% endif %}>
+                                    {% if form.initial.insurance_coverage == coverage.id %}selected {% endif %}>
                                 {{ coverage }}
                             </option>
                             {% endfor %}

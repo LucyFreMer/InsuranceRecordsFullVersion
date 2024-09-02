@@ -36,20 +36,24 @@
             <tr>
                 <th>Pojištění</th>
                 <th>Částka</th>
+                <th>Období pojištění</th>
+                {% if user.is_staff %}
                 <th>Akce</th>
+                {% endif %}
             </tr>
         </thead>
         <tbody>
             {% for policy in policies %}
             <tr>
                 <td><a href="{% url 'insurance_coverage_list' policy.insurance_coverage.insurance_type.id %}?coverage_id={{ policy.insurance_coverage.id }}">{{ policy.insurance_coverage.name }}</a></td>
-                <td>{{ policy.premium|floatformat:0 }} Kč</td>
-                <td>
-                    {% if user.is_staff %}
-                        <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
-                        <a href="{% url 'delete_policy' policy.id %}" class="btn btn-danger btn-sm">Odstranit</a>
-                    {% endif %}
+                <td>{% if policy.premium < 1000 %}&nbsp;&nbsp;{{ policy.premium|floatformat:0 }} Kč {% else %}{{ policy.premium|floatformat:0 }} Kč{% endif %}</td>
+                <td>{% if policy.start_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.start_date }} - {% if policy.end_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.end_date }}</td>
+                {% if user.is_staff %}
+                <td class="text-center">
+                    <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
+                    <a href="{% url 'delete_policy' policy.id %}" class="btn btn-danger btn-sm">Odstranit</a>
                 </td>
+                {% endif %}
             </tr>
             {% endfor %}
 
@@ -57,13 +61,22 @@
                 <td class="text-right"><strong>Roční pojistné celkem:</strong></td>
                 <td><strong>{{ total_premium|floatformat:0 }} Kč</strong></td>
                 <td></td>
+                {% if user.is_staff %}
+                <td></td>
+                {% endif %}
             </tr>
         </tbody>
     </table>
 
     <div class="btn-group-centered">
         <a href="{% url 'add_policy_from_insured' insured_person.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
-        <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">Editovat pojištěnce</a>
+        <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">
+            {% if user.is_staff %}
+                Editovat pojištěnce
+            {% else %}
+                Editovat údaje
+            {% endif %}
+        </a>
         {% if user.is_staff %}
             <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
         {% endif %}
