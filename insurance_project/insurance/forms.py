@@ -31,14 +31,6 @@ class InsuredPersonForm(forms.ModelForm):
             'postal_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte PSČ'}),
         }
 
-    def clean_id_number(self):
-        id_number = self.cleaned_data.get('id_number')
-        if len(id_number) == 10:  # Pokud je zadáno rodné číslo bez lomítka
-            id_number = id_number[:6] + '/' + id_number[6:]  # Přidání lomítka po 6. číslici
-        elif len(id_number) != 11:  # Pokud rodné číslo není ve formátu 6+4 s lomítkem
-            raise forms.ValidationError('Rodné číslo musí mít formát "XXXXXX/XXXX".')
-        return id_number
-
 
 class InsuranceTypeForm(forms.ModelForm):
     class Meta:

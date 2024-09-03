@@ -64,18 +64,4 @@
             </div>
         </form>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const idNumberInput = document.getElementById('{{ form.id_number.id_for_label }}');
-
-            idNumberInput.addEventListener('input', function() {
-                let value = idNumberInput.value.replace(/\D/g, ''); // Remove non-digit characters
-                if (value.length > 6) {
-                    value = value.slice(0, 6) + '/' + value.slice(6);
-                }
-                idNumberInput.value = value;
-            });
-        });
-    </script>
 {% endblock %}

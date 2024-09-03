@@ -65,6 +65,7 @@
     </main>
 
     <script>
+        // Skript pro mizení zpráv
         setTimeout(function() {
             const alerts = document.querySelectorAll('.alert');
             alerts.forEach(function(alert) {
@@ -73,7 +74,88 @@
                     alert.style.display = 'none';
                 }, 1000);
             });
-        }, 2000); // Hlášky začnou mizet po 5 sekundách
+        }, 2000);
+
+        // Skript pro validaci vstupů
+        document.addEventListener('DOMContentLoaded', function() {
+            const idNumberInput = document.getElementById('{{ form.id_number.id_for_label }}');
+            const nameFields = document.querySelectorAll('input[name="{{ form.first_name.name }}"], input[name="{{ form.last_name.name }}"]');
+            const phoneNumberInput = document.getElementById('{{ form.phone_number.id_for_label }}');
+            const postalCodeInput = document.querySelector('input[name="postal_code"]');
+            const emailInput = document.getElementById('{{ form.email.id_for_label }}');
+
+            if (idNumberInput) {
+                idNumberInput.addEventListener('input', function() {
+                    let value = idNumberInput.value.replace(/\D/g, '');
+                    if (value.length > 6) {
+                        value = value.slice(0, 6) + '/' + value.slice(6);
+                    }
+                    idNumberInput.value = value;
+                });
+            }
+
+            if (nameFields) {
+                nameFields.forEach(function(field) {
+                    field.addEventListener('input', function(event) {
+                        var value = event.target.value;
+                        event.target.value = value.replace(/[^a-zA-ZáéíóúýčďěňřšťžÁÉÍÓÚÝČĎĚŇŘŠŤŽ ]/g, '');
+                    });
+                });
+            }
+
+            if (phoneNumberInput) {
+                phoneNumberInput.addEventListener('input', function(event) {
+                    let value = event.target.value;
+
+                    if (value.startsWith('+')) {
+                        value = '+' + value.slice(1).replace(/[^0-9\s]/g, '');
+                    } else {
+                        value = value.replace(/[^0-9\s]/g, '');
+                    }
+
+                    const numericValue = value.replace(/\s+/g, '');
+                    if (numericValue.length > (value.startsWith('+') ? 13 : 12)) {
+                        value = value.slice(0, value.length - 1);
+                    }
+
+                    if (value.indexOf('+') > 0) {
+                        value = value.replace('+', '');
+                    }
+
+                    phoneNumberInput.value = value;
+                });
+            }
+
+            if (postalCodeInput) {
+                postalCodeInput.addEventListener('input', function() {
+                    let value = postalCodeInput.value.replace(/[^0-9]/g, '');
+                    if (value.length > 3) {
+                        value = value.slice(0, 3) + ' ' + value.slice(3);
+                    }
+                    postalCodeInput.value = value;
+                });
+            }
+
+            if (emailInput) {
+                emailInput.addEventListener('input', function(event) {
+                    let value = emailInput.value;
+
+                    // Zakázání neplatných znaků
+                    value = value.replace(/\s/g, ''); // Zakázání mezer
+                    value = value.replace(/[^a-zA-Z0-9._%+-@]/g, ''); // Povolení pouze platných znaků pro email
+
+                    // Základní kontrola emailového formátu
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(value)) {
+                        emailInput.setCustomValidity('Prosím, zadejte platnou emailovou adresu.');
+                    } else {
+                        emailInput.setCustomValidity('');
+                    }
+
+                    emailInput.value = value;
+                });
+            }
+        });
     </script>
 </body>
 </html>

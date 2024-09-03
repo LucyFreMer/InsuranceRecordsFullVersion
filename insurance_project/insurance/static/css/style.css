@@ -368,12 +368,12 @@ th:nth-child(3), td:nth-child(3) {
 
 .admin .insured-detail-table th:nth-child(2), 
 .admin .insured-detail-table td:nth-child(2) {
-    width: 15%; 
+    width: 10%; 
 }
 
 .admin .insured-detail-table th:nth-child(3), 
 .admin .insured-detail-table td:nth-child(3) {
-    width: 25%; 
+    width: 30%; 
 }
 
 .admin .insured-detail-table th:nth-child(4), 
