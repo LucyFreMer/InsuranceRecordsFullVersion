@@ -1,4 +1,5 @@
 About the Application
+
 Introduction
 This application serves as a system for managing insured individuals and their insurance policies. It provides features for managing insured individuals, including creating, editing, and deleting both the insured and their insurance policies.
 
