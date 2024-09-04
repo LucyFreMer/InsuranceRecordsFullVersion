@@ -11,14 +11,19 @@
 {% block content %}
     <div class="container">
         <h1>
+            <!-- Titulek formuláře podle toho, zda je pojištěnec nový, nebo se edituje -->
             {% if form.instance.id %}
                 Editace pojištěnce
             {% else %}
                 Nový pojištěnec
             {% endif %}
         </h1>
+
+        <!-- Formulář pro přidání/úpravu pojištěnce -->
         <form method="post" class="form-horizontal">
             {% csrf_token %}
+
+            <!-- Pole pro křestní jméno a příjmení -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.first_name.label_tag }}
@@ -29,6 +34,8 @@
                     {{ form.last_name }}
                 </div>
             </div>
+
+            <!-- Pole pro rodné číslo a E-mail -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.id_number.label_tag }}
@@ -39,6 +46,8 @@
                     {{ form.email }}
                 </div>
             </div>
+
+            <!-- Pole pro telefonní číslo, ulici a číslo popisné -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.phone_number.label_tag }}
@@ -49,6 +58,8 @@
                     {{ form.street_address }}
                 </div>
             </div>
+
+            <!-- pole pro město a PSČ -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.city.label_tag }}
@@ -59,6 +70,8 @@
                     {{ form.postal_code }}
                 </div>
             </div>
+
+            <!-- Tlačítko pro uložení formuláře -->
             <div class="form-row">
                 <button type="submit" class="btn btn-primary btn-save">Uložit</button>
             </div>

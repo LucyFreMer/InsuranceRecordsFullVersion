@@ -1,3 +1,4 @@
+/* Nastavení základního fontu a pozadí */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -5,6 +6,7 @@ body {
     background-color: #edf7f8;
 }
 
+/* Stylování hlavičky a loga */
 header {
     background-color: #333;
     padding: 10px 0;
@@ -33,6 +35,7 @@ header {
     align-items: center;
 }
 
+/* Stylování navigační lišty */
 .navbar {
     background-color: #333;
     padding: 10px 20px; 
@@ -47,6 +50,7 @@ header {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Navigační menu a odkazy */
 .navbar ul {
     list-style: none;
     margin: 0;
@@ -72,6 +76,7 @@ header {
     transition: color 0.3s ease;
 }
 
+/* Aktivní a hover efekty pro odkazy v navigaci */
 .navbar a.active {
     background-color: #3b3f44;  
     color: #e4f7ff;  
@@ -83,6 +88,7 @@ header {
     color: #e4f7ff;
 }
 
+/* Speciální styl pro logo v navigaci */
 .navbar a.logo {
     color: #fcfeff;  
     font-weight: bold;
@@ -93,6 +99,7 @@ header {
     color: #fcfeff;
 }
 
+/* Styling pro pravou část navigace (uživatelské menu) */
 .nav-right {
     display: flex;
     align-items: center;
@@ -135,6 +142,7 @@ header {
     cursor: pointer; 
 }
 
+/* Stylování upozornění (alertů) */
 .alert {
     position: fixed;
     top: 75px;
@@ -211,6 +219,7 @@ a:hover {
     text-decoration: underline;
 }
 
+/* Nastavení stylů pro tlačítka (např. Zpět, Smazat, Uložit) */
 .btn {
     font-size: 14px;
     padding: 10px 20px;
@@ -272,6 +281,7 @@ a:hover {
     border-color: #fd7e14;
 }
 
+/* Formátování tabulek */
 table {
     width: 100%;
     border-collapse: collapse; 
@@ -317,7 +327,6 @@ td button {
 table.insured-table {
     border: 3px solid #000;
     font-weight: bold;
-    /* Další specifické styly pro pojištěné tabulky */
 }
 
 table.insured-detail-table {
@@ -532,6 +541,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     background-color: #0056b3;
 }
 
+/* Styl pro detail pojištěnce */
 .profile-header {
     display: flex;
     align-items: flex-start;
@@ -613,6 +623,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     
 }
 
+/* Styl pro stránku O  aplikaci*/
 .about-page {
     background-color: #dbf4ff;
     padding: 20px;
@@ -654,6 +665,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     margin-bottom: 20px;
 }
 
+/* Styl pro přihlášení */
 .login-page .btn-save {
     text-align: left;
     display: block;
@@ -675,6 +687,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     text-align: left;
 }
 
+/* Styl pro tlačítka */
 .btn-container {
     display: flex;
     justify-content: center;
@@ -720,6 +733,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     text-decoration: none;
 }
 
+/* Styl pro seznam pojištění */
 .insurance-list {
     list-style-type: none;
     padding: 0;
@@ -874,6 +888,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     gap: 15px;
 }
 
+/* Styl pro pojistná krytí */
 .coverage-item {
     background-color: #e0f7fa;
     padding: 15px;
@@ -956,6 +971,7 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     margin: 0; 
 }
 
+/* Stylování tlačítek pro odstranění a návrat*/
 .form-delete {
     margin-top: 20px;
 }
@@ -970,14 +986,17 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     border: none;
 }
 
+/* Styl pro tlačítko Smazat */
 .form-delete button.btn-danger {
     background-color: #dc3545; 
 }
 
+/* Styl pro tlačítko Zpět */
 .form-delete button.btn-back {
     background-color: #007bff; 
 }
 
+/* Styl pro označení pole "Roční pojistné" */
 #premium-label {
     margin-top: 5px; 
     font-weight: bold; 
@@ -1009,9 +1028,17 @@ table.insured-detail-table tr:last-child td:nth-child(2) {
     border: 1px solid #ccc;
 }
 
+/* Styl pro obsah pojistného krytí*/
 .description-content {
     font-size: 16px;
     line-height: 1.6;
     margin-bottom: 1em;
     color: #333;
+}
+
+/* Styl pro rámeček popisu pojistného krytí */
+textarea {
+    width: 110%;
+    max-width: 590px;
+    height: 200px;
 }

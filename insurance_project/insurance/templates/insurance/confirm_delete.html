@@ -7,10 +7,18 @@
     <h1>Opravdu chcete smazat tento záznam?</h1>
     <p><strong>{{ object }}</strong></p>
 
+    <!-- Formulář pro potvrzení smazání -->
     <form method="post" class="form-delete">
         {% csrf_token %}
-        <button type="button" class="btn btn-back" onclick="window.location.href='{% url 'insured_list' %}'">Zpět</button>
+
+        <!-- Tlačítko zpět - přesměrování zpět na seznam pojištěnců -->
+        <button type="button" class="btn btn-back" onclick="window.location.href='{% url 'insured_list' %}'">
+            Zpět
+        </button>
+
+        <!-- Tlačítko pro smazání záznamu -->
         <button type="submit" class="btn btn-danger">Smazat</button>
+
     </form>
 </div>
 {% endblock %}

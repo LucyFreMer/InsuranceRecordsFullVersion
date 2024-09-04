@@ -18,9 +18,11 @@
             {% endif %}
         </h1>
 
+        <!-- Formulář pro vytvoření nebo editaci pojištění -->
         <form method="post" class="form-horizontal">
             {% csrf_token %}
 
+            <!-- Výběr pojištěné osoby -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="id_insured_person">Pojištěná osoba:</label>
@@ -28,18 +30,25 @@
                         <select id="id_insured_person" name="insured_person" class="form-control custom-select-style">
                             <option value="" selected disabled>Vyberte pojištěnou osobu</option>
                             {% for person in form.fields.insured_person.queryset %}
-                            <option value="{{ person.id }}" {% if form.initial.insured_person == person.id %}selected {% endif %}>
-                                {{ person.first_name }} {{ person.last_name }}
-                            </option>
+                                {% if form.initial.insured_person == person.id %}
+                                    <option value="{{ person.id }}" selected="selected">
+                                {% else %}
+                                    <option value="{{ person.id }}">
+                                {% endif %}
+                                    {{ person.first_name }} {{ person.last_name }}
+                                </option>
                             {% endfor %}
                         </select>
                     {% else %}
-                        <input type="text" class="form-control" value="{{ insured_person.first_name }} {{ insured_person.last_name }}" readonly>
-                        <input type="hidden" name="insured_person" value="{{ insured_person.id }}">
+                        <input type="text" class="form-control"
+                               value="{{ insured_person.first_name }} {{ insured_person.last_name }}" readonly>
+                        <input type="hidden" name="insured_person"
+                               value="{{ insured_person.id }}">
                     {% endif %}
                 </div>
             </div>
 
+            <!-- Výběr pojistného krytí -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="id_insurance_coverage">Pojistné krytí:</label>
@@ -47,19 +56,24 @@
                         <input type="text" class="form-control" value="{{ insurance_coverage.name }}" readonly>
                         <input type="hidden" name="insurance_coverage" value="{{ insurance_coverage.id }}">
                     {% else %}
-                        <select id="id_insurance_coverage" name="insurance_coverage" class="form-control custom-select-style">
+                        <select id="id_insurance_coverage" name="insurance_coverage"
+                                class="form-control custom-select-style">
                             <option value="" selected disabled>Vyberte pojistné krytí</option>
                             {% for coverage in form.fields.insurance_coverage.queryset %}
-                            <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}"
-                                    {% if form.initial.insurance_coverage == coverage.id %}selected {% endif %}>
-                                {{ coverage }}
-                            </option>
+                                {% if form.initial.insurance_coverage == coverage.id %}
+                                    <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}" selected="selected">
+                                {% else %}
+                                    <option value="{{ coverage.id }}" data-premium="{{ coverage.premium }}">
+                                {% endif %}
+                                    {{ coverage }}
+                                </option>
                             {% endfor %}
                         </select>
                     {% endif %}
                 </div>
             </div>
 
+            <!-- Datum začátku pojištění -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     {{ form.start_date.label_tag }}
@@ -67,6 +81,7 @@
                 </div>
             </div>
 
+            <!-- Datum konce pojištění -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     {{ form.end_date.label_tag }}
@@ -74,14 +89,19 @@
                 </div>
             </div>
 
+            <!-- Roční pojistné -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label for="id_premium">Roční pojistné:</label>
                     <input type="text" class="form-control" id="id_premium" name="premium"
-                           value="{% if insurance_coverage %}{{ insurance_coverage.premium|floatformat:0 }},- Kč{% elif form.instance.premium %}{{ form.instance.premium|floatformat:0 }},- Kč{% endif %}" readonly>
+                           value="{% if insurance_coverage %}{{ insurance_coverage.premium|floatformat:0 }} Kč
+                                  {% elif form.instance.premium %}{{ form.instance.premium|floatformat:0 }} Kč
+                                  {% else %}0 Kč{% endif %}"
+                           readonly>
                 </div>
             </div>
 
+            <!-- Tlačítko pro potvrzení -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <button type="submit" class="btn btn-primary">
@@ -97,12 +117,14 @@
     </div>
 
     <script>
+        // Nastavení výchozího data začátku pojištění a automatické nastavení data konce pojištění
         document.addEventListener('DOMContentLoaded', function() {
             const startDateInput = document.getElementById('id_start_date');
             const endDateInput = document.getElementById('id_end_date');
             const coverageSelect = document.getElementById('id_insurance_coverage');
             const premiumInput = document.getElementById('id_premium');
 
+            // Nastavení minimálního data pro začátek pojištění
             if (!startDateInput.value) {
                 const today = new Date();
                 today.setDate(today.getDate() + 1);
@@ -111,6 +133,7 @@
                 startDateInput.value = minDate;
             }
 
+            // Funkce pro nastavení data konce pojištění rok od začátku pojištění
             function updateEndDate() {
                 const startDate = new Date(startDateInput.value);
                 const endDate = new Date(startDate);
@@ -118,12 +141,15 @@
                 endDateInput.value = endDate.toISOString().split('T')[0];
             }
 
+            // Pokud je nastaveno datum začátku, nastaví se i datum konce
             if (startDateInput.value) {
                 updateEndDate();
             }
 
+            // Při změně data začátku se automaticky nastaví datum konce
             startDateInput.addEventListener('change', updateEndDate);
 
+            // Aktualizace ročního pojistného podle vybraného krytí
             coverageSelect.addEventListener('change', function() {
                 const selectedOption = coverageSelect.options[coverageSelect.selectedIndex];
                 const premiumValue = selectedOption.getAttribute('data-premium');
@@ -134,12 +160,14 @@
                 }
             });
 
+            // Nastavení počáteční hodnoty ročního pojistného, pokud je vybráno pojistné krytí
             const selectedOption = coverageSelect.querySelector('option:checked');
             const initialPremiumValue = selectedOption ? selectedOption.getAttribute('data-premium') : null;
             if (initialPremiumValue) {
                 premiumInput.value = parseFloat(initialPremiumValue).toFixed(0) + ',- Kč';
             }
 
+            // Pokud není nastaveno datum konce, nastaví se automaticky
             if (!endDateInput.value) {
                 updateEndDate();
             }

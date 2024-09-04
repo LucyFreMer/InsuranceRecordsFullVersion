@@ -5,6 +5,7 @@
 
 {% block content %}
 <div class="container">
+    <!-- Zobrazení případných zpráv (např. úspěšné uložení nebo chyby) -->
     {% if messages %}
         <div class="alert alert-success">
             {% for message in messages %}
@@ -13,14 +14,20 @@
         </div>
     {% endif %}
 
+    <!-- Hlavní informace o pojištěnci: profilová fotka a základní údaje -->
     <div class="profile-header">
         <div class="profile-image">
-            <img src="{% static 'images/profile_picture.png' %}" alt="{{ insured_person.first_name }} {{ insured_person.last_name }}">
+            <img src="{% static 'images/profile_picture.png' %}"
+                 alt="{{ insured_person.first_name }} {{ insured_person.last_name }}">
         </div>
         <div class="profile-info">
             <div class="left-info">
                 <h1>{{ insured_person.first_name }} {{ insured_person.last_name }}</h1>
-                <p>{{ insured_person.street_address }}<br>{{ insured_person.city }}<br>{{ insured_person.postal_code }}</p>
+                <p>
+                    {{ insured_person.street_address }}<br>
+                    {{ insured_person.city }}<br>
+                    {{ insured_person.postal_code }}
+                </p>
             </div>
             <div class="right-info">
                 <p>{{ insured_person.id_number }}</p>
@@ -30,6 +37,7 @@
         </div>
     </div>
 
+    <!-- Seznam sjednaných pojištění -->
     <h2>Sjednaná pojištění</h2>
     <table class="table table-striped insured-detail-table">
         <thead>
@@ -43,11 +51,26 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Seznam všech sjednaných pojistek -->
             {% for policy in policies %}
             <tr>
-                <td><a href="{% url 'insurance_coverage_list' policy.insurance_coverage.insurance_type.id %}?coverage_id={{ policy.insurance_coverage.id }}">{{ policy.insurance_coverage.name }}</a></td>
-                <td>{% if policy.premium < 1000 %}&nbsp;&nbsp;{{ policy.premium|floatformat:0 }} Kč {% else %}{{ policy.premium|floatformat:0 }} Kč{% endif %}</td>
-                <td>{% if policy.start_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.start_date }} - {% if policy.end_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.end_date }}</td>
+                <td>
+                    <!-- Odkaz na konkrétní pojistné krytí -->
+                    <a href="{% url 'insurance_coverage_list' policy.insurance_coverage.insurance_type.id %}?coverage_id={{ policy.insurance_coverage.id }}">
+                        {{ policy.insurance_coverage.name }}
+                    </a>
+                </td>
+                <td>
+                    <!-- Formátování částky pojistného -->
+                    {% if policy.premium < 1000 %}&nbsp;&nbsp;{{ policy.premium|floatformat:0 }} Kč
+                    {% else %}{{ policy.premium|floatformat:0 }} Kč{% endif %}
+                </td>
+                <td>
+                    <!-- Zobrazení data začátku a konce pojištění -->
+                    {% if policy.start_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.start_date }}
+                    - {% if policy.end_date.day < 10 %}&nbsp;&nbsp;{% endif %}{{ policy.end_date }}
+                </td>
+                <!-- Odkazy pro úpravu a odstranění pojistky pouze pro administrátora -->
                 {% if user.is_staff %}
                 <td class="text-center">
                     <a href="{% url 'edit_policy' policy.id %}" class="btn btn-warning btn-sm">Editovat</a>
@@ -57,6 +80,7 @@
             </tr>
             {% endfor %}
 
+            <!-- Zobrazení celkového ročního pojistného -->
             <tr>
                 <td class="text-right"><strong>Roční pojistné celkem:</strong></td>
                 <td><strong>{{ total_premium|floatformat:0 }} Kč</strong></td>
@@ -68,8 +92,11 @@
         </tbody>
     </table>
 
+    <!-- Akční tlačítka (pro vytvoření pojištění, úpravu nebo odstranění pojištěnce) -->
     <div class="btn-group-centered">
-        <a href="{% url 'add_policy_from_insured' insured_person.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
+        <a href="{% url 'add_policy_from_insured' insured_person.id %}" class="btn btn-primary btn-create-policy">
+            Zřídit pojištění
+        </a>
         <a href="{% url 'edit_insured' insured_person.id %}" class="btn btn-warning">
             {% if user.is_staff %}
                 Editovat pojištěnce
@@ -77,6 +104,7 @@
                 Editovat údaje
             {% endif %}
         </a>
+        <!-- Tlačítko pro odstranění pojištnce pouze pro administrátora -->
         {% if user.is_staff %}
             <a href="{% url 'delete_insured' insured_person.id %}" class="btn btn-danger">Odstranit pojištěnce</a>
         {% endif %}

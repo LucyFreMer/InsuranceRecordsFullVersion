@@ -3,6 +3,7 @@
 {% block title %}Přihlášení{% endblock %}
 
 {% block content %}
+    <!-- Zobrazení zpráv (chybové / informační zprávy) -->
     {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -14,24 +15,33 @@
     <div class="container login-page">
         <h1>Přihlášení</h1>
 
+        <!-- Formulář pro přihlášení uživatele -->
         <form method="post" class="form-horizontal">
             {% csrf_token %}
+
+            <!-- Pole pro uživatelské jméno -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     {{ form.username.label_tag }}
                     {{ form.username }}
                 </div>
             </div>
+
+            <!-- Pole pro heslo -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     {{ form.password.label_tag }}
                     {{ form.password }}
                 </div>
             </div>
+
+            <!-- Tlačítko pro odeslání formuláře (přihlášení) -->
             <div class="form-row">
                 <button type="submit" class="btn btn-primary btn-save">Přihlásit se</button>
             </div>
         </form>
+
+        <!-- Odkaz pro registraci, pokud uživatel nemá účet -->
         <p>Nemáte účet? <a href="{% url 'register' %}">Registrujte se</a></p>
     </div>
 {% endblock %}

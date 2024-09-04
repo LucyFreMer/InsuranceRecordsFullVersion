@@ -18,6 +18,7 @@
             {% endif %}
         </h1>
 
+        <!-- Zobrazení zpráv pro uživatele -->
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -26,12 +27,14 @@
         </div>
         {% endif %}
 
+        <!-- Tlačítko pro přidání nového pojištěnce, zobrazeno pouze administrátorům -->
         {% if user.is_staff %}
         <div class="new-insured-button-container">
             <a href="{% url 'add_insured' %}" class="btn btn-primary new-insured-button">Nový pojištěnec</a>
         </div>
         {% endif %}
 
+        <!-- Tabulka se seznamem pojištěnců (nebo uživatelem, pokud není administrátor) -->
         <table class="table table-striped">
             <thead>
                 <tr>
@@ -43,10 +46,16 @@
             <tbody>
                 {% for person in insured_people %}
                 <tr>
-                    <td><a href="{% url 'insured_detail' person.id %}">{{ person.first_name }} {{ person.last_name }}</a></td>
+                    <td>
+                        <a href="{% url 'insured_detail' person.id %}">
+                            {{ person.first_name }} {{ person.last_name }}
+                        </a>
+                    </td>
                     <td>{{ person.street_address }}, {{ person.city }}, {{ person.postal_code }}</td>
                     <td class="text-center">
+                        <!-- Odkaz pro editaci záznamu pojištěnce -->
                         <a href="{% url 'edit_insured' person.id %}" class="btn btn-warning">Editovat</a>
+                        <!-- Odkaz pro smazání pojištěnce, zobrazeno pouze administrátorům -->
                         {% if user.is_staff %}
                             <a href="{% url 'delete_insured' person.id %}" class="btn btn-danger">Odstranit</a>
                         {% endif %}
@@ -56,6 +65,7 @@
             </tbody>
         </table>
 
+        <!-- Paginace (stránkování) pro seznam pojištěnců, zobrazeno pouze administrátorům -->
         {% if user.is_staff %}
         <div class="pagination">
             <span class="step-links">
@@ -81,5 +91,5 @@
                 </span>
             </div>
         {% endif %}
-    </div>
+</div>
 {% endblock %}

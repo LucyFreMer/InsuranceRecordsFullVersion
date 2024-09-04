@@ -1,36 +1,67 @@
 {% extends 'insurance/base.html' %}
 
-{% block title %}{{ insurance_type.name }}{% endblock %}
+{% block title %}
+    {{ insurance_type.name }}
+{% endblock %}
 
 {% block content %}
 <div class="container">
     <h1 class="page-title">{{ insurance_type.name }}</h1>
+
+    <!-- Seznam pojistných krytí pro daný typ pojištění -->
     <div class="insurance-coverage-list">
         {% for coverage in coverages %}
         <div class="coverage-item">
+            <!-- Zobrazení názvu a popisu pojistného krytí -->
             <strong class="coverage-name">{{ coverage.name }}</strong>
             <p class="coverage-description">{{ coverage.description|safe }}</p>
+
+            <!-- Akční tlačítka pro každé krytí (zřídit pojištění, editovat, odstranit) -->
             <div class="coverage-actions">
+                <!-- Tlačítko pro admina pro zřízení pojištění -->
                 {% if user.is_staff %}
-                    <a href="{% url 'add_policy_from_coverage' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
+                    <a href="{% url 'add_policy_from_coverage' coverage.id %}"
+                       class="btn btn-primary btn-create-policy">
+                        Zřídit pojištění
+                    </a>
+                <!-- Tlačítko pro běžného uživatele pro zřízení pojištění -->
                 {% else %}
-                    <a href="{% url 'create_policy_for_user' coverage.id %}" class="btn btn-primary btn-create-policy">Zřídit pojištění</a>
+                    <a href="{% url 'create_policy_for_user' coverage.id %}"
+                       class="btn btn-primary btn-create-policy">
+                        Zřídit pojištění
+                    </a>
                 {% endif %}
 
+                <!-- Tlačítko pro editaci pojistného krytí -->
                 {% if user.is_staff %}
-                <a href="{% url 'edit_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-warning">Editovat</a>
-                <form method="post" action="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" style="display:inline;">
+                <a href="{% url 'edit_insurance_coverage' insurance_type.id coverage.id %}"
+                   class="btn btn-warning">
+                    Editovat
+                </a>
+
+                <!-- Formulář pro odstranění pojistného krytí -->
+                <form method="post" action="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}"
+                      style="display:inline;">
                     {% csrf_token %}
-                    <a href="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}" class="btn btn-danger">Odstranit</a>
+                    <!-- Tlačítko pro odstranění pojistného krytí -->
+                    <a href="{% url 'delete_insurance_coverage' insurance_type.id coverage.id %}"
+                       class="btn btn-danger">
+                        Odstranit
+                    </a>
                 </form>
                 {% endif %}
             </div>
         </div>
         {% endfor %}
     </div>
+
+    <!-- Tlačítko pro přidání nového pojistného krytí (pouze pro administrátory) -->
     {% if user.is_staff %}
     <div class="btn-container-center">
-        <a href="{% url 'add_insurance_coverage' insurance_type.id %}" class="btn btn-primary btn-add-insurance">Přidat nové pojistné krytí</a>
+        <a href="{% url 'add_insurance_coverage' insurance_type.id %}"
+           class="btn btn-primary btn-add-insurance">
+            Přidat nové pojistné krytí
+        </a>
     </div>
     {% endif %}
 </div>

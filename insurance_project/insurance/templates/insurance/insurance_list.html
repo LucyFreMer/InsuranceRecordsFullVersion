@@ -5,20 +5,29 @@
 {% block content %}
 <div class="container">
     <h1 class="page-title">Pojištění domácích mazlíčků</h1>
+
+    <!-- Seznam pojištění ve formě gridu -->
     <div class="insurance-grid">
         {% for insurance in insurances %}
         <div class="insurance-item">
+            <!-- Hlavní blok s názvem pojištění a tlačítkem pro rozbalení popisu -->
             <div class="insurance-header">
                 <strong class="insurance-name">
+                    <!-- Odkaz na pojistná krytí -->
                     <a href="{% url 'insurance_coverage_list' insurance.id %}">{{ insurance.name }}</a>
                 </strong>
+                <!-- Tlačítko pro rozbalení/sbalení popisu -->
                 <button class="toggle-description" aria-expanded="false">
                     <i class="fas fa-chevron-down"></i>
                 </button>
             </div>
+
+            <!-- Popis pojištění, který je možné rozbalit/sbalit -->
             <div class="insurance-description">
                 {{ insurance.description }}
             </div>
+
+            <!-- Akce pro správu pojištění dostupné pouze pro administrátory -->
             {% if user.is_staff %}
             <div class="insurance-actions">
                 <a href="{% url 'edit_insurance' insurance.id %}" class="btn btn-warning">Editovat</a>
@@ -29,6 +38,7 @@
         {% endfor %}
     </div>
 
+    <!-- Tlačítko pro přidání nového pojištění (dostupné pouze pro administrátory) -->
     {% if user.is_staff %}
     <div class="btn-container-center">
         <a href="{% url 'add_insurance' %}" class="btn btn-primary btn-add-insurance">Přidat nové pojištění</a>
@@ -36,6 +46,7 @@
     {% endif %}
 </div>
 
+<!-- Skript pro rozbalování a sbalování popisu pojištění -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.toggle-description').forEach(button => {
@@ -43,9 +54,11 @@
                 const description = this.parentNode.nextElementSibling;
                 const isExpanded = this.getAttribute('aria-expanded') === 'true';
 
+                // Sbalení popisu
                 if (isExpanded) {
                     description.classList.remove('show');
                     this.setAttribute('aria-expanded', 'false');
+                // Rozbalení popisu
                 } else {
                     description.classList.add('show');
                     this.setAttribute('aria-expanded', 'true');

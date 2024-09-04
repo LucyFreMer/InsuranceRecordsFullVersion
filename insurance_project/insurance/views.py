@@ -1,19 +1,21 @@
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib import messages
-from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
-from .forms import InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured, PolicyFormFromCoverage, CustomUserCreationForm, UserPolicyForm
+from .forms import (InsuredPersonForm, InsuranceTypeForm, InsuranceCoverageForm, PolicyFormFromInsured,
+                    PolicyFormFromCoverage, CustomUserCreationForm, UserPolicyForm)
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import user_passes_test, login_required
-from django.core.exceptions import PermissionDenied
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils import timezone
+import logging
+from django.db import transaction
 
 
-def assign_default_user_to_insured_persons(request):
+# Přiřazení výchozího uživatele k pojištěncům
+def assign_default_user_to_insured_persons():
     default_user = User.objects.get(username='default_username')
     InsuredPerson.objects.update(user=default_user)
     return HttpResponse("Assigned default user to all insured persons.")
@@ -22,12 +24,12 @@ def assign_default_user_to_insured_persons(request):
 # Hlavní stránka (index) - zobrazuje seznam pojištěnců
 @login_required
 def index(request):
+    # Admin vidí všechny pojištěnce
     if request.user.is_staff:
         insured_people_list = InsuredPerson.objects.all().order_by('last_name', 'first_name')
-        print("Admin vidí všechny pojištěnce:", insured_people_list)
+    # Běžný uživatel vidí pouze své pojištěnce
     else:
         insured_people_list = InsuredPerson.objects.filter(user=request.user).order_by('last_name', 'first_name')
-        print(f"Uživatel {request.user.username} vidí své pojištěnce:", insured_people_list)
 
     paginator = Paginator(insured_people_list, 10)  # počet pojištěnců na stránku
 
@@ -40,8 +42,10 @@ def index(request):
 # Detail pojištěnce
 @login_required
 def insured_detail(request, id):
+    # Admin vidí detaily každého pojištěnce
     if request.user.is_staff:
         insured_person = get_object_or_404(InsuredPerson, id=id)
+    # Běžný uživatel vidí pouze detaily svého pojištěnce
     else:
         insured_person = get_object_or_404(InsuredPerson, id=id, user=request.user)
 
@@ -84,7 +88,7 @@ def edit_insured(request, id):
 
     return render(request, 'insurance/insured_form.html', {
         'form': form,
-        'insured_person': insured_person  # Předáváme pojištěnce do šablony pro případné další zobrazení informací
+        'insured_person': insured_person  # Předávání pojištěnce do šablony pro případné další zobrazení informací
     })
 
 
@@ -137,6 +141,7 @@ def edit_insurance(request, id):
     return render(request, 'insurance/insurance_form.html', {'form': form})
 
 
+# Odstranění pojištění
 def delete_insurance(request, id):
     insurance_type = get_object_or_404(InsuranceType, id=id)
 
@@ -145,7 +150,9 @@ def delete_insurance(request, id):
         messages.success(request, 'Typ pojištění byl úspěšně odebrán.')
         return redirect('insurance_list')
 
-    return render(request, 'insurance/confirm_delete.html', {'object': insurance_type, 'type': 'typ pojištění'})
+    return render(
+        request, 'insurance/confirm_delete.html', {'object': insurance_type, 'type': 'typ pojištění'}
+    )
 
 
 # Přidání a úprava pojistného krytí
@@ -172,7 +179,8 @@ def add_or_edit_coverage(request, insurance_id, coverage_id=None):
     else:
         form = InsuranceCoverageForm(instance=coverage)
 
-    return render(request, 'insurance/insurance_coverage_form.html', {'form': form, 'insurance_type': insurance_type})
+    return render(request, 'insurance/insurance_coverage_form.html',
+                  {'form': form, 'insurance_type': insurance_type})
 
 
 # Odstranění pojistného krytí
@@ -184,10 +192,12 @@ def delete_coverage(request, insurance_id, coverage_id):
         messages.success(request, 'Pojistné krytí bylo úspěšně odebráno.')
         return redirect('insurance_coverage_list', id=insurance_id)
 
-    return render(request, 'insurance/confirm_delete.html', {'object': coverage, 'type': 'pojistné krytí'})
+    return render(
+        request, 'insurance/confirm_delete.html', {'object': coverage, 'type': 'pojistné krytí'}
+    )
 
 
-# Přidání pojistky k pojištěnci
+# Přidání pojistky přímo ze stránky pojištěnce
 def add_policy_from_insured(request, insured_id):
     insured_person = get_object_or_404(InsuredPerson, id=insured_id)
 
@@ -203,9 +213,12 @@ def add_policy_from_insured(request, insured_id):
     else:
         form = PolicyFormFromInsured()
 
-    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': insured_person})
+    return render(
+        request, 'insurance/policy_form.html', {'form': form, 'insured_person': insured_person}
+    )
 
 
+# Přidání pojistky ze stránky pojistného krytí
 @login_required
 def add_policy_from_coverage(request, coverage_id):
     insurance_coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
@@ -229,6 +242,7 @@ def add_policy_from_coverage(request, coverage_id):
     })
 
 
+# Přidání pojistky
 @login_required
 def create_policy_for_user(request, coverage_id):
     insurance_coverage = get_object_or_404(InsuranceCoverage, id=coverage_id)
@@ -265,15 +279,18 @@ def edit_policy(request, id=None):
         form = PolicyFormFromInsured(request.POST, instance=policy)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Pojištění bylo úspěšně aktualizováno.')
             return redirect('insured_detail', id=policy.insured_person.id)
     else:
         form = PolicyFormFromInsured(instance=policy)
         if not id:
             form.fields['start_date'].initial = (timezone.now() + timezone.timedelta(days=1)).date()
 
-    return render(request, 'insurance/policy_form.html', {'form': form, 'insured_person': policy.insured_person})
+    return render(request, 'insurance/policy_form.html',
+                  {'form': form, 'insured_person': policy.insured_person})
 
 
+# Seznam pojistných krytí
 def insurance_coverage_list(request, id):
     insurance_type = get_object_or_404(InsuranceType, id=id)
     coverage_id = request.GET.get('coverage_id')
@@ -302,27 +319,67 @@ def delete_policy(request, id):
     return render(request, 'insurance/confirm_delete.html', {'object': policy})
 
 
-# Jak na pojištění
-def how_to_insurance(request):
-    return render(request, 'insurance/how_to_insurance.html')
-
-
-# O aplikaci
-def about(request):
-    return render(request, 'insurance/about.html')
-
-
 # Registrace
+logger = logging.getLogger(__name__)
+
+
 def register(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            messages.success(request, 'Registrace proběhla úspěšně, jste přihlášen(a).')
-            login(request, user)
-            return redirect('index')
+            email = form.cleaned_data.get('email')
+            id_number = form.cleaned_data.get('id_number')
+
+            # Zalogujeme informace pro ladění
+            logger.info(f"Pokouším se vytvořit pojištěnce s e-mailem: {email} a rodným číslem: {id_number}")
+
+            try:
+                with transaction.atomic():
+                    # Ověření, zda už neexistuje pojištěnec s tímto rodným číslem a emailem
+                    if (InsuredPerson.objects.filter(id_number=id_number).exists()
+                            or InsuredPerson.objects.filter(email=email).exists()):
+                        messages.error(
+                            request,
+                            "Pojištěnec s tímto e-mailem, rodným číslem nebo telefonním číslem již existuje."
+                        )
+
+                        logger.error(
+                            f"Pojištěnec s e-mailem {email} nebo rodným číslem {id_number} již existuje."
+                        )
+
+                        return render(request, 'insurance/register.html', {'form': form})
+
+                    # Vytvoření uživatele
+                    user = form.save()
+
+                    # Vytvoření a přiřazení nového pojištěnce uživateli
+                    InsuredPerson.objects.create(
+                        user=user,  # Přiřadíme pojištěnce k vytvořenému uživateli
+                        first_name=form.cleaned_data.get('first_name'),
+                        last_name=form.cleaned_data.get('last_name'),
+                        id_number=id_number,
+                        email=email,
+                        phone_number=form.cleaned_data.get('phone_number'),
+                        street_address=form.cleaned_data.get('street_address'),
+                        city=form.cleaned_data.get('city'),
+                        postal_code=form.cleaned_data.get('postal_code')
+                    )
+
+                    # Přihlásíme uživatele po úspěšné registraci
+                    login(request, user)
+                    messages.success(request, 'Registrace proběhla úspěšně, jste přihlášen(a).')
+                    logger.info(f"Pojištěnec s e-mailem {email} a rodným číslem {id_number} byl úspěšně vytvořen.")
+                    return redirect('index')
+
+            except Exception as e:
+                # Pokud se stane jakákoli chyba, nedojde k uložení uživatele ani pojištěnce
+                logger.error(f"Chyba při vytváření pojištěnce: {str(e)}")
+                messages.error(request, "Došlo k chybě při registraci. Zkuste to prosím znovu.")
+                return render(request, 'insurance/register.html', {'form': form})
+
     else:
         form = CustomUserCreationForm()
+
     return render(request, 'insurance/register.html', {'form': form})
 
 
@@ -357,3 +414,13 @@ def delete_insured(request, id):
         messages.success(request, 'Pojištěnec byl úspěšně odebrán.')
         return redirect('insured_list')
     return render(request, 'insurance/confirm_delete.html', {'object': insured_person})
+
+
+# Jak na pojištění
+def how_to_insurance(request):
+    return render(request, 'insurance/how_to_insurance.html')
+
+
+# O aplikaci
+def about(request):
+    return render(request, 'insurance/about.html')

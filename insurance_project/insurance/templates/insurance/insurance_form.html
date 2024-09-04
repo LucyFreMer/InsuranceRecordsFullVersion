@@ -10,6 +10,7 @@
 
 {% block content %}
     <div class="container">
+        <!-- Titulek stránky dle stavu (editace/vytvoření nového pojištění) -->
         <h1>
             {% if form.instance.id %}
                 Editace pojištění
@@ -17,16 +18,20 @@
                 Nové pojištění
             {% endif %}
         </h1>
+
+        <!-- Formulář pro vytvoření nebo editaci pojištění -->
         <form method="post" class="form-horizontal">
             {% csrf_token %}
 
-            <!-- Zde zobrazte celý formulář pomocí .as_p -->
+            <!-- Automatické zobrazení všech polí formuláře pomocí as_p -->
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    {{ form.as_p }} <!-- Použijeme form.as_p pro jednoduché vykreslení všech polí -->
+                    <!-- Zobrazení formuláře s formátováním ve stylu odstavců -->
+                    {{ form.as_p }}
                 </div>
             </div>
 
+            <!-- Tlačítko pro uložení formuláře -->
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <button type="submit" class="btn btn-primary btn-save-insurance">

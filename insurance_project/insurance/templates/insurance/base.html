@@ -6,36 +6,79 @@
     <title>{% block title %}PojistěníApp{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
 </head>
+
 <body class="{% if user.is_staff %}admin{% endif %}">
+
+    <!-- Navigace -->
     <header>
         <nav class="navbar">
             <a href="{% url 'index' %}" class="logo">
                 <img src="{% static 'images/paw_icon.png' %}" alt="Paw Icon" class="logo-image">
                 <span class="logo-text">Paw Care</span>
             </a>
+            <!-- Hlavní navigace -->
             <ul>
                 {% if user.is_authenticated %}
                     {% if user.is_staff %}
-                        <li><a href="{% url 'insured_list' %}" class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">Pojištěnci</a></li>
+                        <li>
+                            <a href="{% url 'insured_list' %}"
+                               class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">
+                                Pojištěnci
+                            </a>
+                        </li>
+
                     {% else %}
-                        <li><a href="{% url 'insured_list' %}" class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">Pojištěnec</a></li>
+                        <li>
+                            <a href="{% url 'insured_list' %}"
+                               class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">
+                                Pojištěnec
+                            </a>
+                        </li>
+
                     {% endif %}
                 {% else %}
-                    <li><a href="{% url 'insured_list' %}" class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">Pojištěnec</a></li>
+                    <li>
+                        <a href="{% url 'insured_list' %}"
+                           class="{% if request.resolver_match.url_name == 'insured_list' %}active{% endif %}">
+                            Pojištěnec
+                        </a>
+                    </li>
+
                 {% endif %}
-                <li><a href="{% url 'insurance_list' %}" class="{% if request.resolver_match.url_name == 'insurance_list' %}active{% endif %}">Pojištění</a></li>
-                <li><a href="{% url 'how_to_insurance' %}" class="{% if request.resolver_match.url_name == 'how_to_insurance' %}active{% endif %}">Jak na pojištění</a></li>
-                <li><a href="{% url 'about' %}" class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">O aplikaci</a></li>
+                <li>
+                    <a href="{% url 'insurance_list' %}"
+                       class="{% if request.resolver_match.url_name == 'insurance_list' %}active{% endif %}">
+                        Pojištění
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'how_to_insurance' %}"
+                       class="{% if request.resolver_match.url_name == 'how_to_insurance' %}active{% endif %}">
+                        Jak na pojištění
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'about' %}"
+                       class="{% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                        O aplikaci
+                    </a>
+                </li>
             </ul>
+
+            <!-- Uživatelská část navigace -->
             <ul class="nav-right">
                 {% if user.is_authenticated %}
+                    <!-- Pokud je uživatel admin, zobrazí se Admin jako odkaz -->
                     {% if user.is_staff %}
                         <li><a href="{% url 'admin:index' %}">Admin</a></li>
+                    <!-- Pokud je uživatel běžný, zobrazí se jméno jako nekliknutelný text -->
                     {% else %}
-                        <li><a href="#" class="capitalize-first">{{ user.username|title }}</a></li>
+                        <li><a class="capitalize-first">{{ user.username|title }}</a></li>
                     {% endif %}
                     <li>
                         <form method="post" action="{% url 'logout' %}" style="display:inline;">
@@ -44,14 +87,26 @@
                         </form>
                     </li>
                 {% else %}
-                    <li><a href="{% url 'login' %}" class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">Přihlásit</a></li>
-                    <li><a href="{% url 'register' %}" class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">Registrovat</a></li>
+                    <li>
+                        <a href="{% url 'login' %}"
+                           class="{% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                        Přihlásit
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{% url 'register' %}"
+                           class="{% if request.resolver_match.url_name == 'register' %}active{% endif %}">
+                        Registrovat
+                        </a>
+                    </li>
                 {% endif %}
             </ul>
         </nav>
     </header>
 
     <main>
+        <!-- Zobrazení zpráv -->
         {% if messages %}
             <div class="messages">
                 {% for message in messages %}
@@ -60,10 +115,23 @@
             </div>
         {% endif %}
 
+        <!-- Obsah stránky -->
         {% block content %}
         {% endblock %}
     </main>
 
+    <!-- Zobrazení chyb ve formuláři -->
+    {% if form.errors %}
+    <div class="alert alert-danger">
+        <ul>
+        {% for field, errors in form.errors.items %}
+            <li>{{ field }}: {{ errors|join:", " }}</li>
+        {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- JavaScript -->
     <script>
         // Skript pro mizení zpráv
         setTimeout(function() {
@@ -78,12 +146,109 @@
 
         // Skript pro validaci vstupů
         document.addEventListener('DOMContentLoaded', function() {
-            const idNumberInput = document.getElementById('{{ form.id_number.id_for_label }}');
-            const nameFields = document.querySelectorAll('input[name="{{ form.first_name.name }}"], input[name="{{ form.last_name.name }}"]');
-            const phoneNumberInput = document.getElementById('{{ form.phone_number.id_for_label }}');
-            const postalCodeInput = document.querySelector('input[name="postal_code"]');
-            const emailInput = document.getElementById('{{ form.email.id_for_label }}');
+            // Definice všech vstupů s pevnými ID, jak jsou zobrazeny ve formuláři
+            const idNumberInput = document.getElementById('id_id_number'); // Pevné ID pro rodné číslo
+            const firstNameInput = document.getElementById('id_first_name'); // Pevné ID pro jméno
+            const lastNameInput = document.getElementById('id_last_name'); // Pevné ID pro příjmení
+            const phoneNumberInput = document.getElementById('id_phone_number'); // Pevné ID pro telefonní číslo
+            const postalCodeInput = document.getElementById('id_postal_code'); // Pevné ID pro PSČ
+            const emailInput = document.getElementById('id_email'); // Pevné ID pro email
+            const streetAddressInput = document.getElementById('id_street_address'); // Pevné ID pro ulici
+            const cityInput = document.getElementById('id_city'); // Pevné ID pro město
+            const usernameInput = document.getElementById('id_username'); // Pevné ID pro uživatelské jméno
+            const passwordInput = document.getElementById('id_password1'); // Hlavní heslo
+            const confirmPasswordInput = document.getElementById('id_password2'); // Potvrzení hesla
 
+            // Přidání atributu autocomplete pro pole
+            if (usernameInput) usernameInput.setAttribute('autocomplete', 'username');
+            if (passwordInput) passwordInput.setAttribute('autocomplete', 'new-password');
+            if (confirmPasswordInput) confirmPasswordInput.setAttribute('autocomplete', 'new-password');
+            if (idNumberInput) idNumberInput.setAttribute('autocomplete', 'off');
+            if (firstNameInput) firstNameInput.setAttribute('autocomplete', 'given-name');
+            if (lastNameInput) lastNameInput.setAttribute('autocomplete', 'family-name');
+            if (phoneNumberInput) phoneNumberInput.setAttribute('autocomplete', 'tel');
+            if (postalCodeInput) postalCodeInput.setAttribute('autocomplete', 'postal-code');
+            if (emailInput) emailInput.setAttribute('autocomplete', 'email');
+            if (streetAddressInput) streetAddressInput.setAttribute('autocomplete', 'street-address');
+            if (cityInput) cityInput.setAttribute('autocomplete', 'address-level2'); // autocomplete pro Město
+
+
+            // Regular expression pro validaci jména a příjmení
+            const nameRegex = /^[a-zA-ZáéíóúýčďěňřšťžÁÉÍÓÚÝČĎĚŇŘŠŤŽ ]+$/;
+
+            // Validace jména a příjmení
+            const nameFields = [firstNameInput, lastNameInput];
+
+            if (nameFields) {
+                nameFields.forEach(function(field) {
+                    field.addEventListener('input', function(event) {
+                        const value = event.target.value;
+
+                        // Zkontrolujte, zda obsahuje pouze povolené znaky
+                        if (!nameRegex.test(value)) {
+                            field.setCustomValidity('Jméno a příjmení mohou obsahovat pouze písmena a mezery.');
+                        } else {
+                            field.setCustomValidity(''); // Zruší chybovou zprávu, pokud je vstup platný
+                        }
+
+                        event.target.value = value.replace(/[^a-zA-ZáéíóúýčďěňřšťžÁÉÍÓÚÝČĎĚŇŘŠŤŽ ]/g, ''); // Odstraní nepovolené znaky
+                    });
+
+                    field.addEventListener('blur', function() {
+                        if (!field.value.trim()) {
+                            field.setCustomValidity("Toto pole je povinné.");
+                        } else {
+                            field.setCustomValidity('');
+                        }
+                    });
+                });
+            }
+
+
+            // Validace uživatelského jména
+            if (usernameInput) {
+                usernameInput.addEventListener('blur', function() {
+                    if (!usernameInput.value.trim()) {
+                        usernameInput.setCustomValidity('Uživatelské jméno je povinné.');
+                    } else {
+                        usernameInput.setCustomValidity('');
+                    }
+                });
+            }
+
+
+            // Validace hesla
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    const passwordValue = passwordInput.value;
+                    const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])/; // Min. jedno číslo a jeden speciální znak
+
+                    if (passwordValue.length < 8) {
+                        passwordInput.setCustomValidity('Heslo musí být alespoň 8 znaků dlouhé.');
+                    } else if (!passwordPattern.test(passwordValue)) {
+                        passwordInput.setCustomValidity(
+                            'Heslo musí obsahovat alespoň jedno číslo a jeden speciální znak.'
+                        );
+                    } else {
+                        passwordInput.setCustomValidity('');
+                    }
+                });
+            }
+
+
+            // Validace potvrzení hesla
+            if (confirmPasswordInput) {
+                confirmPasswordInput.addEventListener('input', function() {
+                    if (confirmPasswordInput.value !== passwordInput.value) {
+                        confirmPasswordInput.setCustomValidity('Hesla se neshodují.');
+                    } else {
+                        confirmPasswordInput.setCustomValidity('');
+                    }
+                });
+            }
+
+
+            // Validace rodného čísla
             if (idNumberInput) {
                 idNumberInput.addEventListener('input', function() {
                     let value = idNumberInput.value.replace(/\D/g, '');
@@ -92,17 +257,19 @@
                     }
                     idNumberInput.value = value;
                 });
-            }
 
-            if (nameFields) {
-                nameFields.forEach(function(field) {
-                    field.addEventListener('input', function(event) {
-                        var value = event.target.value;
-                        event.target.value = value.replace(/[^a-zA-ZáéíóúýčďěňřšťžÁÉÍÓÚÝČĎĚŇŘŠŤŽ ]/g, '');
-                    });
+                idNumberInput.addEventListener('blur', function() {
+                    const idNumberPattern = /^\d{6}\/\d{4}$/;
+                    if (!idNumberPattern.test(idNumberInput.value)) {
+                        idNumberInput.setCustomValidity("Rodné číslo musí být ve formátu 'XXXXXX/XXXX'.");
+                    } else {
+                        idNumberInput.setCustomValidity('');
+                    }
                 });
             }
 
+
+            // Validace telefonního čísla
             if (phoneNumberInput) {
                 phoneNumberInput.addEventListener('input', function(event) {
                     let value = event.target.value;
@@ -126,16 +293,33 @@
                 });
             }
 
+
+            // Validace PSČ
             if (postalCodeInput) {
                 postalCodeInput.addEventListener('input', function() {
-                    let value = postalCodeInput.value.replace(/[^0-9]/g, '');
+                    let value = postalCodeInput.value.replace(/\D/g, ''); // Odstraní všechno kromě číslic
+                    if (value.length > 5) {
+                        value = value.slice(0, 5); // Omezí na maximálně 5 číslic
+                    }
                     if (value.length > 3) {
-                        value = value.slice(0, 3) + ' ' + value.slice(3);
+                        value = value.slice(0, 3) + ' ' + value.slice(3); // Přidá mezeru po třetí číslici
                     }
                     postalCodeInput.value = value;
                 });
+
+                postalCodeInput.addEventListener('blur', function() {
+                    const value = postalCodeInput.value.replace(/\s+/g, '');
+                    postalCodeInput.value = value.slice(0, 3) + (value.length > 3 ? ' ' + value.slice(3) : '');
+                    if (value.length !== 5) {
+                        postalCodeInput.setCustomValidity('PSČ musí obsahovat přesně 5 číslic.');
+                    } else {
+                        postalCodeInput.setCustomValidity('');
+                    }
+                });
             }
 
+
+            // Validace emailu
             if (emailInput) {
                 emailInput.addEventListener('input', function(event) {
                     let value = emailInput.value;
@@ -153,6 +337,30 @@
                     }
 
                     emailInput.value = value;
+                });
+            }
+
+
+            // Validace ulice a čísla popisného
+            if (streetAddressInput) {
+                streetAddressInput.addEventListener('blur', function() {
+                    if (!streetAddressInput.value.trim()) {
+                        streetAddressInput.setCustomValidity('Toto pole je povinné.');
+                    } else {
+                        streetAddressInput.setCustomValidity('');
+                    }
+                });
+            }
+
+
+            // Validace města
+            if (cityInput) {
+                cityInput.addEventListener('blur', function() {
+                    if (!cityInput.value.trim()) {
+                        cityInput.setCustomValidity('Toto pole je povinné.');
+                    } else {
+                        cityInput.setCustomValidity('');
+                    }
                 });
             }
         });

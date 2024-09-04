@@ -3,6 +3,7 @@
 {% block title %}Registrace{% endblock %}
 
 {% block content %}
+    <!-- Zobrazení zpráv (úspěšná registrace / chyby) -->
     {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -13,15 +14,19 @@
 
     <div class="container login-page">
         <h1>Registrace nového uživatele</h1>
+
+        <!-- Formulář pro registraci uživatele -->
         <form method="post" class="form-horizontal">
             {% csrf_token %}
 
+            <!-- Zobrazení chyb, které nejsou spojeny s konkrétním polem -->
             {% if form.non_field_errors %}
                 <div class="alert alert-danger">
                     {{ form.non_field_errors }}
                 </div>
             {% endif %}
 
+            <!-- Pole pro uživatelské jméno a adresu -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.username.label_tag }}
@@ -33,6 +38,7 @@
                 </div>
             </div>
 
+            <!-- Pole pro jméno a město -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.first_name.label_tag }}
@@ -44,6 +50,7 @@
                 </div>
             </div>
 
+            <!-- Pole pro příjmení a PSČ -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.last_name.label_tag }}
@@ -55,6 +62,7 @@
                 </div>
             </div>
 
+            <!-- Pole pro rodné číslo -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.id_number.label_tag }}
@@ -64,6 +72,7 @@
                 </div>
             </div>
 
+            <!-- Pole pro email a heslo -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.email.label_tag }}
@@ -75,6 +84,7 @@
                 </div>
             </div>
 
+            <!-- Pole pro telefonní číslo a potvrzení hesla -->
             <div class="form-row">
                 <div class="form-group col-md-6">
                     {{ form.phone_number.label_tag }}
@@ -86,21 +96,27 @@
                 </div>
             </div>
 
+            <!-- Tlačítko pro odeslání formuláře -->
             <div class="form-row">
                 <button type="submit" class="btn btn-primary btn-save">Registrovat se</button>
             </div>
         </form>
+
+        <!-- Odkaz na přihlášení pro uživatele, kteří již mají účet -->
         <p>Máte již účet? <a href="{% url 'login' %}">Přihlášte se</a></p>
     </div>
 
     <script>
+        // Automatické formátování rodného čísla při zadávání (přidání lomítka)
         document.addEventListener('DOMContentLoaded', function() {
             const idNumberInput = document.getElementById('id_id_number');
 
+            // Při změně hodnoty vstupu
             idNumberInput.addEventListener('input', function() {
-                let value = idNumberInput.value.replace(/\D/g, ''); // Odstranit všechny nečíselné znaky
+                let value = idNumberInput.value.replace(/\D/g, '');
                 if (value.length > 6) {
-                    value = value.slice(0, 6) + '/' + value.slice(6, 10); // Přidat lomítko po 6 číslicích
+                    // Přidání lomítka po 6 číslicích (formát rodného čísla)
+                    value = value.slice(0, 6) + '/' + value.slice(6, 10);
                 }
                 idNumberInput.value = value;
             });

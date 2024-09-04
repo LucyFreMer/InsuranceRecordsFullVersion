@@ -2,14 +2,17 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import InsuredPerson, InsuranceType, InsuranceCoverage, Policy
-from django.utils.timezone import now
 from django.utils import timezone
 
 
+# Formulář pro model InsuredPerson (pojištěnec)
 class InsuredPersonForm(forms.ModelForm):
     class Meta:
         model = InsuredPerson
-        fields = ['first_name', 'last_name', 'id_number', 'email', 'phone_number', 'street_address', 'city', 'postal_code']
+        # Definice polí, která budou součástí formuláře
+        fields = ['first_name', 'last_name', 'id_number', 'email',
+                  'phone_number', 'street_address', 'city', 'postal_code']
+        # Popisky pro jednotlivá pole
         labels = {
             'first_name': 'Jméno',
             'last_name': 'Příjmení',
@@ -20,18 +23,36 @@ class InsuredPersonForm(forms.ModelForm):
             'city': 'Město',
             'postal_code': 'PSČ',
         }
+        # Přidání widgetů pro vzhled formuláře a placeholderů
         widgets = {
-            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte křestní jméno'}),
-            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte příjmení'}),
-            'id_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte rodné číslo'}),  # Přidání widgetu pro rodné číslo
-            'email': forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte email'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte telefonní číslo'}),
-            'street_address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte ulici a číslo popisné'}),
-            'city': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte město'}),
-            'postal_code': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte PSČ'}),
+            'first_name': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte křestní jméno'}
+            ),
+            'last_name': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte příjmení'}
+            ),
+            'id_number': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte rodné číslo'}
+            ),  # Přidání widgetu pro rodné číslo
+            'email': forms.EmailInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte email'}
+            ),
+            'phone_number': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte telefonní číslo'}
+            ),
+            'street_address': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte ulici a číslo popisné'}
+            ),
+            'city': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte město'}
+            ),
+            'postal_code': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte PSČ'}
+            ),
         }
 
 
+# Formulář pro model InsuranceType (typ pojištění)
 class InsuranceTypeForm(forms.ModelForm):
     class Meta:
         model = InsuranceType
@@ -40,12 +61,14 @@ class InsuranceTypeForm(forms.ModelForm):
             'name': 'Název pojištění',
             'description': 'Popis pojištění',
         }
+        # Widgety pro vzhled polí v HTML
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'description': forms.Textarea(attrs={'class': 'form-control'}),
         }
 
 
+# Formulář pro model InsuranceCoverage (pojistné krytí)
 class InsuranceCoverageForm(forms.ModelForm):
     class Meta:
         model = InsuranceCoverage
@@ -56,12 +79,19 @@ class InsuranceCoverageForm(forms.ModelForm):
             'premium': 'Roční pojistné',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte název pojistného krytí'}),
-            'description': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Zadejte popis pojistného krytí'}),
-            'premium': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Zadejte výši pojistného'}),
+            'name': forms.TextInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte název pojistného krytí'}
+            ),
+            'description': forms.Textarea(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte popis pojistného krytí'}
+            ),
+            'premium': forms.NumberInput(
+                attrs={'class': 'form-control', 'placeholder': 'Zadejte výši pojistného'}
+            ),
         }
 
 
+# Formulář pro sjednání pojištění přímo od konkrétního pojištěnce
 class PolicyFormFromInsured(forms.ModelForm):
     class Meta:
         model = Policy
@@ -82,10 +112,11 @@ class PolicyFormFromInsured(forms.ModelForm):
             # Při editaci zachováme původní datum
             self.fields['start_date'].initial = self.instance.start_date
         else:
-            # Při prvním vytvoření nastavíme výchozí datum na zítřejší den
+            # Výchozí datum začátku je zítřejší den
             self.fields['start_date'].initial = (timezone.now() + timezone.timedelta(days=1)).date()
 
 
+# Formulář pro sjednání pojištění ze stránky pojistných krytí
 class PolicyFormFromCoverage(forms.ModelForm):
     class Meta:
         model = Policy
@@ -108,15 +139,16 @@ class PolicyFormFromCoverage(forms.ModelForm):
         # Předání seznamu pojištěnců
         self.fields['insured_person'].queryset = InsuredPerson.objects.all()
 
-        # Automatické nastavení prémia na základě pojistného krytí
-        if insurance_coverage:
+        # Nastavení výše pojistného na základě pojistného krytí
+        if insurance_coverage and hasattr(insurance_coverage, 'premium'):
             self.initial['premium'] = insurance_coverage.premium
 
 
+# Formulář pro přidání pojištění
 class UserPolicyForm(forms.ModelForm):
     class Meta:
         model = Policy
-        fields = ['start_date', 'end_date']  # insured_person bude automaticky nastaveno
+        fields = ['start_date', 'end_date']
         labels = {
             'start_date': 'Datum začátku pojištění',
             'end_date': 'Datum konce pojištění',
@@ -130,11 +162,12 @@ class UserPolicyForm(forms.ModelForm):
         insurance_coverage = kwargs.pop('insurance_coverage', None)
         super(UserPolicyForm, self).__init__(*args, **kwargs)
 
-        # Automatické nastavení prémia na základě pojistného krytí
-        if insurance_coverage:
+        # Nastavení výše pojistného na základě pojistného krytí
+        if insurance_coverage and hasattr(insurance_coverage, 'premium'):
             self.initial['premium'] = insurance_coverage.premium
 
 
+# Formulář pro vytvoření uživatele
 class CustomUserCreationForm(UserCreationForm):
     username = forms.CharField(
         required=True,
@@ -195,25 +228,17 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'id_number', 'email', 'phone_number', 'street_address', 'city', 'postal_code')
+        fields = UserCreationForm.Meta.fields + (
+            'first_name', 'last_name', 'id_number', 'email', 'phone_number', 'street_address', 'city', 'postal_code'
+        )
 
     def save(self, commit=True):
+        # Uložíme pouze uživatele, ne pojištěnce
         user = super().save(commit=False)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
         user.email = self.cleaned_data['email']
+        # Pokud commit=True, uloží uživatele do databáze
         if commit:
             user.save()
-
-            # Vytvoření a uložení pojištěnce
-            InsuredPerson.objects.create(
-                first_name=self.cleaned_data['first_name'],
-                last_name=self.cleaned_data['last_name'],
-                id_number=self.cleaned_data['id_number'],
-                email=self.cleaned_data['email'],
-                phone_number=self.cleaned_data['phone_number'],
-                street_address=self.cleaned_data['street_address'],
-                city=self.cleaned_data['city'],
-                postal_code=self.cleaned_data['postal_code'],
-            )
         return user
