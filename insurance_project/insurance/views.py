@@ -386,8 +386,19 @@ def register(request):
 # Přihlášení
 class CustomLoginView(LoginView):
     def form_valid(self, form):
+        # Po úspěšném přihlášení zobrazíme zprávu
         messages.success(self.request, f"Jste přihlášen(a) {form.get_user().username}.")
         return super().form_valid(form)
+
+    def form_invalid(self, form):
+        form.errors.clear()
+
+        # Zobrazíme vlastní chybovou zprávu
+        messages.error(self.request,
+                       "Uživatelské jméno nebo heslo není správné. Zkontrolujte své údaje a zkuste to znovu.")
+
+        # Zobrazíme formulář znovu bez výchozích chyb
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 # Odhlášení

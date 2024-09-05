@@ -281,6 +281,7 @@
                     }
 
                     const numericValue = value.replace(/\s+/g, '');
+
                     if (numericValue.length > (value.startsWith('+') ? 13 : 12)) {
                         value = value.slice(0, value.length - 1);
                     }
@@ -290,6 +291,14 @@
                     }
 
                     phoneNumberInput.value = value;
+
+                    if (numericValue.length < 9 || numericValue.length > 12) {
+                        phoneNumberInput.setCustomValidity("Telefonní číslo musí mít alespoň 9 a maximálně 12 číslic.");
+                    } else {
+                        phoneNumberInput.setCustomValidity('');
+                    }
+
+                    phoneNumberInput.reportValidity();
                 });
             }
 
